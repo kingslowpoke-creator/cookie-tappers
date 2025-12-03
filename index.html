@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cookie Clicks</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Cookie Tappers</title>
+    <!-- Sora Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Sora', sans-serif;
             margin: 0;
             padding: 0;
-            background: url('https://img.freepik.com/premium-photo/black-dark-blue-gradient-background-abstract-gradient-blue-black-soft-multicolored-backgr_694006-4046.jpg') no-repeat center center fixed;
+            background: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0ui83-4de77b80-58f0-4b21-a467-e0ac93190cb4.jpg/v1/fit/w_612,h_293,q_70,strp/light_mode_sky_by_unknown9394998_dl0ui83-375w-2x.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MjkzIiwicGF0aCI6Ii9mL2FmOGJjMTEzLWQ5YTQtNDBjZi05MDc3LTA2YjY3M2M1ODNlMC9kbDB1aTgzLTRkZTc3YjgwLTU4ZjAtNGIyMS1hNDY3LWUwYWM5MzE5MGNiNC5qcGciLCJ3aWR0aCI6Ijw9NjEyIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.5vxmqSY7Sxib52l7J0BJ-g3QuZvTRbfR_tBRlek-Ijs') no-repeat center center fixed;
             background-size: cover;
             color: white;
             display: flex;
@@ -33,6 +34,7 @@
             color: white;
             font-size: 30px;
             z-index: 1000;
+            font-family: 'Sora', sans-serif;
         }
 
         .loading-screen img {
@@ -53,6 +55,7 @@
             position: relative;
             width: 100%;
             height: 100%;
+            font-family: 'Sora', sans-serif;
         }
 
         #cookie-count {
@@ -62,10 +65,12 @@
             text-align: left;
             font-size: 30px;
             font-weight: bold;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: #ffffffa8;
             padding: 10px;
             border-radius: 20px;
             transition: all 0.38s ease-in-out;
+            backdrop-filter: blur(7px);
+            color: black;
         }
 
         #per-second {
@@ -74,9 +79,11 @@
             left: 20px;
             text-align: left;
             font-size: 16px;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: #ffffffa8;
             padding: 10px;
             border-radius: 20px;
+            backdrop-filter: blur(7px);
+            color: black;
         }
 
         .cookie-section {
@@ -90,7 +97,6 @@
             height: 200px;
             cursor: pointer;
             transition: transform 0.3s;
-            border-radius: 50%;
         }
 
         #cookie:hover {
@@ -102,7 +108,7 @@
             top: 50px;
             left: 800px;
             display: flex;
-            background-color: black;
+            background-color: #ce565682;
             border-radius: 20px;
             overflow: hidden;
         }
@@ -111,11 +117,11 @@
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
-            background-color: black;
-            color: white;
+            background-color: #ce565682;
+            color: #0bfb8cfa;
             border: none;
             border-radius: 0;
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Sora', sans-serif;
             transition: background-color 0.3s;
         }
 
@@ -128,64 +134,67 @@
             background-color: darkgray;
         }
 
-        .upgrade-container, .science-upgrade-container {
+        .upgrade-container {
             position: absolute;
             top: 100px;
             left: 800px;
             display: flex;
             align-items: left;
             flex-direction: column;
-            background-color: blue;
+            background-color: #ffffffc9;
             border-radius: 30px;
             padding: 20px;
             max-height: 380px;
             overflow-y: auto;
+            backdrop-filter: blur(7px);
+            color: black;
+            width: auto;
         }
 
-        .upgrade-container::-webkit-scrollbar, .science-upgrade-container::-webkit-scrollbar {
+        .upgrade-container::-webkit-scrollbar {
             width: 10px;
         }
 
-        .upgrade-container::-webkit-scrollbar-thumb, .science-upgrade-container::-webkit-scrollbar-thumb {
+        .upgrade-container::-webkit-scrollbar-thumb {
             background: grey;
             border-radius: 40px;
         }
 
-        .upgrade-item, .science-upgrade-item {
+        .upgrade-item {
             display: flex;
             align-items: center;
             margin-bottom: 15px;
         }
 
-        .upgrade-item img, .science-upgrade-item img {
+        .upgrade-item img {
             width: 60px;
             height: 60px;
             margin-right: 5px;
-            border-radius: 50%;
+            border-radius: 0%;
         }
 
-        .upgrade-item div, .science-upgrade-item div {
+        .upgrade-item div {
             font-size: 18px;
             font-weight: bold;
             margin-right: 5px;
             height: 20vh;
         }
 
-        .upgrade-item button, .science-upgrade-item button {
+        .upgrade-item button {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
-            background-color: black;
-            color: white;
+            background-color: #9ea8db;
+            color: black;
             border: none;
             border-radius: 25px;
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Sora', sans-serif;
             text-align: left;
             width: 230px;
         }
 
-        .upgrade-item button:hover, .science-upgrade-item button:hover {
-            background-color: darkblue;
+        .upgrade-item button:hover {
+            background-color: #daa8e6;
         }
 
         .clicker-clone {
@@ -195,6 +204,7 @@
             transition: opacity 0.5s, transform 0.2s;
             font-size: 18px;
             font-weight: normal;
+            font-family: 'Sora', sans-serif;
         }
 
         .golden-cookie {
@@ -225,6 +235,7 @@
             border-radius: 10px;
             font-size: 14px;
             white-space: nowrap;
+            font-family: 'Sora', sans-serif;
         }
 
         .cursor:hover .tooltip {
@@ -238,10 +249,12 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
+            color: black;
+            font-family: 'Sora', sans-serif;
         }
 
         .username-container h2 {
-            font-size: 24px;
+            font-size: 20px;
             margin-bottom: 10px;
         }
 
@@ -252,21 +265,24 @@
             border: none;
             outline: none;
             text-align: center;
-            color: grey;
-            font-family: 'Manrope', sans-serif
+            color: black;
+            font-family:'Sora', sans-serif;
+            background-color: #ffffff54;
+            backdrop-filter: blur(7px)
         }
 
         .username-container button {
             padding: 10px 20px;
             font-size: 18px;
-            border-radius: 20px;
+            border-radius: 30px;
             border: none;
             cursor: pointer;
-            background-color: white;
-            color: black;
+            background-color: #ffffff8a;
+            color: #000000;
             margin-top: 10px;
-            width: calc(100% - 40px);
-            font-family: 'Manrope', sans-serif;
+            width: calc(78% - 40px);
+            font-family: 'Sora', sans-serif;
+            backdrop-filter: blur(7px)
         }
 
         .username-container button:hover {
@@ -280,6 +296,8 @@
             display: flex;
             align-items: center;
             font-size: 18px;
+            color: black;
+            font-family: 'Sora', sans-serif;
         }
 
         .user-info img {
@@ -289,52 +307,71 @@
             margin-right: 10px;
         }
 
-        #science-count {
-            margin-left: 20px;
-            text-align: left;
-            font-size: 16px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 20px;
+        /* Stats Container Styles */
+        .stats-container {
+            position: absolute;
+            top: 100px;
+            left: 800px;
+            display: none;
+            flex-direction: column;
+            background-color: #ffffffc9;
+            border-radius: 30px;
+            padding: 20px;
+            max-height: 380px;
+            width: 350px;
+            color: black;
+            backdrop-filter: blur(7px);
+            font-family: 'Sora', sans-serif;
+        }
+        .stats-container .stats-label {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .stats-container .stat-row {
+            font-size: 18px;
+            margin-top: 6px;
+            margin-bottom: 6px;
         }
     </style>
 </head>
 
 <body>
     <div class="loading-screen">
-        <img src="https://media.istockphoto.com/id/1314616897/photo/3d-render-abstract-urban-futuristic-background-cityscape-with-neon-light-starry-night-sky-and.jpg?s=612x612&w=0&k=20&c=8u9du7wZ_gwMt6beuW-QRhzts2U38oioiPH-ZDdXJwQ=" alt="Loading Image">
-        Loading...
-        <div class="version">v1.475</div>
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/008/202/355/small_2x/animation-loading-circle-icon-loading-gif-loading-screen-gif-loading-spinner-gif-loading-animation-loading-on-black-background-free-video.jpg" alt="Loading Image">
+        Game loading...
+        <div class="version">Game in progress</div>
     </div>
     <div class="container">
-        <div id="cookie-count">0 cookies</div>
-        <div id="per-second">per second: 0.0</div>
+        <div id="cookie-count">🍪0 cookies</div>
+        <div id="per-second">0.0🍪 per second</div>
         <div class="cookie-section">
-            <img id="cookie" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-2rfqk593TIvbcLS7xiRLzXqp1zIEMcBnBQ&s" alt="Cookie">
+            <img id="cookie" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0n5e1-7f8a7443-3e72-4878-b1ec-0741fb022c86.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwbjVlMS03ZjhhNzQ0My0zZTcyLTQ4NzgtYjFlYy0wNzQxZmIwMjJjODYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.2LafT9kIKBp0uDpf7_g9O_a2F2O9ZqH6EaJfCgxTG48" alt="Cookie">
         </div>
         <div class="segmented-control">
             <button id="buildings-button" class="selected">Buildings</button>
-            <button id="science-button">Science</button>
+            <button id="stats-button">Stats</button>
         </div>
+        <!-- Upgrades (buildings) container -->
         <div class="upgrade-container" id="upgrade-container">
             <div class="upgrade-item">
-                <img id="cursor-image" src="https://shorturl.at/B2G9P" alt="Cursor">
-                <div id="cursor-label"><strong>Cursor (0)</strong><br><span style="font-weight: normal;">+0.1 /sec</span></div>
+                <img id="cursor-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0u8ut-2ce4b58c-d1cb-45f8-aacb-aa985ba75add.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwdTh1dC0yY2U0YjU4Yy1kMWNiLTQ1ZjgtYWFjYi1hYTk4NWJhNzVhZGQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.YFN4vM6ZWaYbVFiRgCv5BUhO8GWPofIZ4Y_R57chuTI" alt="Cursor">
+                <div id="cursor-label"><strong>Autotap: 0</strong><br><span style="font-weight: normal;">+0.1/s</span></div>
                 <button id="upgrade-button">🍪 15</button>
             </div>
             <div class="upgrade-item" id="grandma-upgrade" style="display: none;">
-                <img id="grandma-image" src="https://shorturl.at/BQPEE" alt="Grandma">
-                <div id="grandma-label"><strong>Grandma (0)</strong><br><span style="font-weight: normal;">+1 /sec</span></div>
+                <img id="grandma-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0u9zr-6ea65aed-c1af-48f8-9493-d05f1b152ca4.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwdTl6ci02ZWE2NWFlZC1jMWFmLTQ4ZjgtOTQ5My1kMDVmMWIxNTJjYTQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.6rO1C2diBdMBVXxJXLJ4es4hUwHFrDNeC-XD7fc7swQ" alt="Grandma">
+                <div id="grandma-label"><strong>Pickaxe (0)</strong><br><span style="font-weight: normal;">+1/s</span></div>
                 <button id="grandma-button">🍪 100</button>
             </div>
             <div class="upgrade-item" id="farm-upgrade" style="display: none;">
                 <img id="farm-image" src="https://shorturl.at/I8nZx" alt="Farm">
-                <div id="farm-label"><strong>Farm (0)</strong><br><span style="font-weight: normal;">+8 /sec</span></div>
+                <div id="farm-label"><strong>Farm (0)</strong><br><span style="font-weight: normal;">+8/s</span></div>
                 <button id="farm-button">🍪 1,100</button>
             </div>
             <div class="upgrade-item" id="mine-upgrade" style="display: none;">
                 <img id="mine-image" src="https://shorturl.at/PphBC" alt="Mine">
-                <div id="mine-label"><strong>Mine (0)</strong><br><span style="font-weight: normal;">+47 /sec</span></div>
+                <div id="mine-label"><strong>Mine (0)</strong><br><span style="font-weight: normal;">+47/s</span></div>
                 <button id="mine-button">🍪 12,000</button>
             </div>
             <div class="upgrade-item" id="factory-upgrade" style="display: none;">
@@ -345,43 +382,42 @@
             <div class="upgrade-item" id="bank-upgrade" style="display: none;">
                 <img id="bank-image" src="https://shorturl.at/YloxO" alt="Bank">
                 <div id="bank-label"><strong>Bank (0)</strong><br><span style="font-weight: normal;">+1,400 /sec</span></div>
-                <button id="bank-button">🍪 1.400M</button>
+                <button id="bank-button">🍪 1.40M</button>
             </div>
             <div class="upgrade-item" id="temple-upgrade" style="display: none;">
                 <img id="temple-image" src="https://shorturl.at/aVOxt" alt="Temple">
                 <div id="temple-label"><strong>Temple (0)</strong><br><span style="font-weight: normal;">+7,800 /sec</span></div>
-                <button id="temple-button">🍪 20.000M</button>
+                <button id="temple-button">🍪 20.00M</button>
             </div>
             <div class="upgrade-item" id="wizard-upgrade" style="display: none;">
                 <img id="wizard-image" src="https://shorturl.at/0ydFQ" alt="Wizard Tower">
-                <div id="wizard-label"><strong>Wizard Tower (0)</strong><br><span style="font-weight: normal;">+44,000 /sec</span></div>
-                <button id="wizard-button">🍪 330.000M</button>
+                <div id="wizard-label"><strong>Wizard Tower (0)</strong><br><span style="font-weight: normal;">+39,000 /sec</span></div>
+                <button id="wizard-button">🍪 330.00M</button>
             </div>
         </div>
-        <div class="science-upgrade-container" id="science-upgrade-container" style="display: none;">
-            <div class="science-upgrade-item">
-                <img id="science-image" src="https://shorturl.at/cE55C" alt="Science Upgrade">
-                <div id="science-label"><strong>More cookies per click</strong><br><span style="font-weight: normal;">x2 per click</span></div>
-                <button id="science-upgrade-button">🔬 20.00</button>
-            </div>
+        <!-- Stats container (replaces science upgrades) -->
+        <div class="stats-container" id="stats-container">
+            <div class="stats-label">Cookies accumulated</div>
+            <div class="stat-row" id="total-cookies-row">🍪0</div>
         </div>
         <audio id="click-sound" src="https://shorturl.at/4iEeb"></audio>
         <audio id="upgrade-sound" src="buyUpgrade.mp3"></audio>
         <div class="user-info" style="display: none;">
-            <img src="https://shorturl.at/opac6" alt="User Profile">
+            <img src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png" alt="User Profile">
             <span id="username-display"></span>
-            <div id="science-count">0.00 Science</div>
         </div>
     </div>
     <div class="username-container">
-        <h2>Enter Username to continue</h2>
+        <h2>Enter a username</h2>
         <input type="text" placeholder="Username">
-        <button id="continue-button">Continue</button>
+        <button id="continue-button">Start playing</button>
     </div>
 
     <script>
+        // --- Variables ---
         let cookieCount = 0;
-        let cookiesPerClick = 12.5;
+        let totalCookies = 0;
+        let cookiesPerClick = 1;
         let upgradeCost = 15;
         let grandmaCost = 100;
         let farmCost = 1100;
@@ -401,10 +437,6 @@
         let wizardCps = 44000;
         let lastClickTime = 0;
         let intervalId = null;
-        let scienceCount = 0;
-        let cost1 = 30.00;
-        let scienceClickCount = 0;
-        const CLICK_DELAY = 10;
         let maxUpgradeReached = false;
 
         let ownedCursors = 0;
@@ -416,7 +448,7 @@
         let ownedTemples = 0;
         let ownedWizards = 0;
 
-        const suffixes = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "Non", "Dec", "Ud", "Td"]
+        const suffixes = ["k", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Udc", "Ddc", "Tdc", "Qadc"];
 
         const loadingScreen = document.querySelector('.loading-screen');
         const container = document.querySelector('.container');
@@ -432,32 +464,29 @@
         const bankButtonElement = document.getElementById('bank-button');
         const templeButtonElement = document.getElementById('temple-button');
         const wizardButtonElement = document.getElementById('wizard-button');
-        const cursorImageElement = document.getElementById('cursor-image');
         const clickSoundElement = document.getElementById('click-sound');
         const upgradeSoundElement = document.getElementById('upgrade-sound');
-        const scienceCountElement = document.getElementById('science-count');
         const userInfoElement = document.querySelector('.user-info');
         const usernameDisplayElement = document.getElementById('username-display');
         const continueButton = document.getElementById('continue-button');
         const buildingsButton = document.getElementById('buildings-button');
-        const scienceButton = document.getElementById('science-button');
+        const statsButton = document.getElementById('stats-button');
         const upgradeContainer = document.getElementById('upgrade-container');
-        const scienceUpgradeContainer = document.getElementById('science-upgrade-container');
-        const scienceUpgradeButton = document.getElementById('science-upgrade-button');
-        const scienceLabel = document.getElementById('science-label');
+        const statsContainer = document.getElementById('stats-container');
+        const totalCookiesRow = document.getElementById('total-cookies-row');
 
+        // ---- Number Formatters ----
         function formatNumber(number) {
             if (number >= 1000000) {
                 const tier = Math.floor(Math.log10(number) / 3);
                 const suffix = suffixes[tier - 1];
                 const scale = Math.pow(10, tier * 3);
                 const scaled = number / scale;
-                return `${scaled.toFixed(3)}${suffix}`;
+                return `${scaled.toFixed(2)}${suffix}`;
             }
             return Math.floor(number).toLocaleString();
         }
-
-        function formatScienceNumber(number) {
+        function formatPerSecond(number) {
             if (number >= 1000000) {
                 const tier = Math.floor(Math.log10(number) / 3);
                 const suffix = suffixes[tier - 1];
@@ -467,32 +496,16 @@
             } else if (number >= 1000) {
                 return Math.floor(number).toLocaleString();
             } else {
-                return number.toFixed(2);
-            }
-        }
-
-        function formatPerSecond(number) {
-            if (number >= 1000000) {
-                const tier = Math.floor(Math.log10(number) / 3);
-                const suffix = suffixes[tier - 1];
-                const scale = Math.pow(10, tier * 3);
-                const scaled = number / scale;
-                return `${scaled.toFixed(1)}${suffix}`;
-            } else if (number >= 1000) {
-                return Math.floor(number).toLocaleString();
-            } else {
                 return number.toFixed(1);
             }
         }
-
-        // New function to format cookies per click in the same way as cookies per second
         function formatPerClick(number) {
             if (number >= 1000000) {
                 const tier = Math.floor(Math.log10(number) / 3);
                 const suffix = suffixes[tier - 1];
                 const scale = Math.pow(10, tier * 3);
                 const scaled = number / scale;
-                return `${scaled.toFixed(1)}${suffix}`;
+                return `${scaled.toFixed(2)}${suffix}`;
             } else if (number >= 1000) {
                 return Math.floor(number).toLocaleString();
             } else {
@@ -501,18 +514,16 @@
         }
 
         function updateDisplay() {
-            document.title = `${formatNumber(Math.floor(cookieCount))} cookies - Cookie Clicks`;
-            cookieCountElement.textContent = `${formatNumber(Math.floor(cookieCount))} cookies`;
-            perSecondElement.textContent = `per second: ${formatPerSecond(cookiesPerSecond)}`;
-            scienceCountElement.textContent = `${formatScienceNumber(scienceCount)} Science`;
-            document.getElementById('cursor-label').innerHTML = `<strong>Cursor (${ownedCursors})</strong><br><span style="font-weight: normal;">+0.1 /sec</span>`;
-            document.getElementById('grandma-label').innerHTML = `<strong>Grandma (${ownedGrandmas})</strong><br><span style="font-weight: normal;">+1 /sec</span>`;
-            document.getElementById('farm-label').innerHTML = `<strong>Farm (${ownedFarms})</strong><br><span style="font-weight: normal;">+8 /sec</span>`;
-            document.getElementById('mine-label').innerHTML = `<strong>Mine (${ownedMines})</strong><br><span style="font-weight: normal;">+47 /sec</span>`;
-            document.getElementById('factory-label').innerHTML = `<strong>Factory (${ownedFactories})</strong><br><span style="font-weight: normal;">+260 /sec</span>`;
-            document.getElementById('bank-label').innerHTML = `<strong>Bank (${ownedBanks})</strong><br><span style="font-weight: normal;">+1,400 /sec</span>`;
-            document.getElementById('temple-label').innerHTML = `<strong>Temple (${ownedTemples})</strong><br><span style="font-weight: normal;">+7,800 /sec</span>`;
-            document.getElementById('wizard-label').innerHTML = `<strong>Wizard Tower (${ownedWizards})</strong><br><span style="font-weight: normal;">+44,000 /sec</span>`;
+            cookieCountElement.textContent = `🍪${formatNumber(Math.floor(cookieCount))} cookies`;
+            perSecondElement.textContent = `${formatPerSecond(cookiesPerSecond)}🍪 per second`;
+            document.getElementById('cursor-label').innerHTML = `<strong>Autotap: ${ownedCursors}</strong><br><span style="font-weight: normal;">+0.1/s</span>`;
+            document.getElementById('grandma-label').innerHTML = `<strong>Pickaxe: ${ownedGrandmas}</strong><br><span style="font-weight: normal;">+1/s</span>`;
+            document.getElementById('farm-label').innerHTML = `<strong>Farm: ${ownedFarms}</strong><br><span style="font-weight: normal;">+8/s</span>`;
+            document.getElementById('mine-label').innerHTML = `<strong>Mine: ${ownedMines}</strong><br><span style="font-weight: normal;">+47/s</span>`;
+            document.getElementById('factory-label').innerHTML = `<strong>Factory: ${ownedFactories}</strong><br><span style="font-weight: normal;">+260/s</span>`;
+            document.getElementById('bank-label').innerHTML = `<strong>Bank: ${ownedBanks}</strong><br><span style="font-weight: normal;">+1,400/s</span>`;
+            document.getElementById('temple-label').innerHTML = `<strong>Temple: ${ownedTemples}</strong><br><span style="font-weight: normal;">+7,800/s</span>`;
+            document.getElementById('wizard-label').innerHTML = `<strong>Wizard Tower: ${ownedWizards}</strong><br><span style="font-weight: normal;">+39,000/s</span>`;
             upgradeButtonElement.textContent = `🍪 ${formatNumber(Math.floor(upgradeCost))}`;
             grandmaButtonElement.textContent = `🍪 ${formatNumber(Math.floor(grandmaCost))}`;
             farmButtonElement.textContent = `🍪 ${formatNumber(Math.floor(farmCost))}`;
@@ -521,7 +532,7 @@
             bankButtonElement.textContent = `🍪 ${formatNumber(Math.floor(bankCost))}`;
             templeButtonElement.textContent = `🍪 ${formatNumber(Math.floor(templeCost))}`;
             wizardButtonElement.textContent = `🍪 ${formatNumber(Math.floor(wizardCost))}`;
-            updateScienceButton();
+            totalCookiesRow.innerHTML = `🍪${formatNumber(Math.floor(totalCookies))}`;
         }
 
         function createClickerClone(clicks, x, y) {
@@ -550,8 +561,9 @@
             goldenCookie.style.left = `${x}px`;
 
             goldenCookie.addEventListener('click', () => {
-                cookieCount += 200 + (cookiesPerSecond / 10);
-                scienceCount += 10;  // Add science points when golden cookie is clicked
+                const bonus = 200 + (cookiesPerSecond / 10);
+                cookieCount += bonus;
+                totalCookies += bonus;
                 updateDisplay();
                 document.body.removeChild(goldenCookie);
             });
@@ -562,7 +574,7 @@
                 if (document.body.contains(goldenCookie)) {
                     document.body.removeChild(goldenCookie);
                 }
-            }, 5000); // Remove after 5 seconds
+            }, 5000);
         }
 
         function startInterval() {
@@ -570,6 +582,7 @@
 
             intervalId = setInterval(() => {
                 cookieCount += cookiesPerSecond / 10;
+                totalCookies += cookiesPerSecond / 10;
                 updateDisplay();
                 checkUpgrades();
                 if (maxUpgradeReached) {
@@ -615,9 +628,6 @@
                 bankCost,
                 templeCost,
                 wizardCost,
-                scienceCount,
-                cost1,
-                scienceClickCount,
                 ownedCursors,
                 ownedGrandmas,
                 ownedFarms,
@@ -626,7 +636,8 @@
                 ownedBanks,
                 ownedTemples,
                 ownedWizards,
-                maxUpgradeReached
+                maxUpgradeReached,
+                totalCookies
             };
             localStorage.setItem(`cookieClicks_${username}`, JSON.stringify(progress));
         }
@@ -635,56 +646,42 @@
             const savedProgress = localStorage.getItem(`cookieClicks_${username}`);
             if (savedProgress) {
                 const progress = JSON.parse(savedProgress);
-                cookieCount = progress.cookieCount;
-                cookiesPerClick = progress.cookiesPerClick;
-                cookiesPerSecond = progress.cookiesPerSecond;
-                upgradeCost = progress.upgradeCost;
-                grandmaCost = progress.grandmaCost;
-                farmCost = progress.farmCost;
-                mineCost = progress.mineCost;
-                factoryCost = progress.factoryCost;
-                bankCost = progress.bankCost;
-                templeCost = progress.templeCost;
-                wizardCost = progress.wizardCost;
-                scienceCount = progress.scienceCount;
-                cost1 = progress.cost1;
-                scienceClickCount = progress.scienceClickCount;
-                ownedCursors = progress.ownedCursors;
-                ownedGrandmas = progress.ownedGrandmas;
-                ownedFarms = progress.ownedFarms;
-                ownedMines = progress.ownedMines;
-                ownedFactories = progress.ownedFactories;
-                ownedBanks = progress.ownedBanks;
-                ownedTemples = progress.ownedTemples;
-                ownedWizards = progress.ownedWizards;
-                maxUpgradeReached = progress.maxUpgradeReached;
+                cookieCount = progress.cookieCount || 0;
+                cookiesPerClick = progress.cookiesPerClick || 1;
+                cookiesPerSecond = progress.cookiesPerSecond || 0;
+                upgradeCost = progress.upgradeCost || 15;
+                grandmaCost = progress.grandmaCost || 100;
+                farmCost = progress.farmCost || 1100;
+                mineCost = progress.mineCost || 12000;
+                factoryCost = progress.factoryCost || 130000;
+                bankCost = progress.bankCost || 1400000;
+                templeCost = progress.templeCost || 20000000;
+                wizardCost = progress.wizardCost || 330000000;
+                ownedCursors = progress.ownedCursors || 0;
+                ownedGrandmas = progress.ownedGrandmas || 0;
+                ownedFarms = progress.ownedFarms || 0;
+                ownedMines = progress.ownedMines || 0;
+                ownedFactories = progress.ownedFactories || 0;
+                ownedBanks = progress.ownedBanks || 0;
+                ownedTemples = progress.ownedTemples || 0;
+                ownedWizards = progress.ownedWizards || 0;
+                maxUpgradeReached = progress.maxUpgradeReached || false;
+                totalCookies = progress.totalCookies || cookieCount;
                 updateDisplay();
                 startInterval();
             }
         }
 
-        function updateScienceButton() {
-            if (scienceClickCount < 4) {
-                scienceUpgradeButton.textContent = `🔬 ${formatScienceNumber(cost1)}`;
-                scienceLabel.innerHTML = `<strong>Hero Clickers</strong><br><span style="font-weight: normal;">More Cookies/click</span>`;
-            } else {
-                scienceUpgradeButton.textContent = `Max`;
-                scienceLabel.innerHTML = `<strong>Max upgrade</strong><br><span style="font-weight: normal;">All bought</span>`;
-                scienceUpgradeButton.disabled = true;
-                maxUpgradeReached = true;
-            }
-        }
-
         function updateCookiesPerClick() {
-            cookiesPerClick = 8 + Math.exp(Math.log10(cookiesPerSecond / 5));
+            cookiesPerClick = 8 + Math.exp(Math.log10(cookiesPerSecond / 3));
         }
 
         cookieElement.addEventListener('click', (event) => {
             const now = Date.now();
-            if (now - lastClickTime >= CLICK_DELAY) {
+            if (now - lastClickTime >= 10) {
                 lastClickTime = now;
                 cookieCount += cookiesPerClick;
-                scienceCount += cookiesPerClick / 100; // Add science points for each click
+                totalCookies += cookiesPerClick;
                 createClickerClone(cookiesPerClick, event.clientX, event.clientY);
                 updateDisplay();
                 clickSoundElement.play();
@@ -699,24 +696,6 @@
                 ownedCursors++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
-            }
-        });
-
-        scienceUpgradeButton.addEventListener('click', () => {
-            if (scienceCount >= cost1) {
-                scienceCount -= cost1;
-                if (scienceClickCount < 3) {
-                    cookiesPerClick *= 2; // Double the cookies per click
-                    cost1 = Math.round(cost1 * 1.7 * 100) / 100;
-                    scienceClickCount++;
-                } else if (scienceClickCount === 3) {
-                    cookiesPerClick += 0.1; // Add 0.1 to cookies per click
-                    cost1 = 99.00; // Set the final cost if needed
-                    scienceClickCount++;
-                }
-                updateScienceButton();
-                updateDisplay();
                 upgradeSoundElement.play();
             }
         });
@@ -809,7 +788,6 @@
             userInfoElement.style.display = 'flex';
             usernameDisplayElement.textContent = username;
             loadProgress(username);
-            updateScienceButton();
         }
 
         // Hide loading screen and show username input after 2 seconds
@@ -823,15 +801,10 @@
         usernameInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
                 let username = usernameInput.value.trim();
-
-                // Generate a random username if input is empty or contains only spaces
                 if (!username || username.match(/^\s*$/)) {
                     username = `User${Math.floor(Math.random() * 1000000)}`;
                 }
-
-                // Ensure username only contains letters, numbers, underscores, and dots
                 username = username.replace(/[^a-zA-Z0-9_.]/g, '');
-
                 if (username) {
                     usernameContainer.style.display = 'none';
                     container.style.display = 'block';
@@ -843,15 +816,10 @@
         // Listen for continue button click and show the game container
         continueButton.addEventListener('click', () => {
             let username = usernameInput.value.trim();
-
-            // Generate a random username if input is empty or contains only spaces
             if (!username || username.match(/^\s*$/)) {
                 username = `User${Math.floor(Math.random() * 1000000)}`;
             }
-
-            // Ensure username only contains letters, numbers, underscores, and dots
             username = username.replace(/[^a-zA-Z0-9_.]/g, '');
-
             if (username) {
                 usernameContainer.style.display = 'none';
                 container.style.display = 'block';
@@ -870,21 +838,25 @@
         // Handle segmented control button clicks
         buildingsButton.addEventListener('click', () => {
             buildingsButton.classList.add('selected');
-            scienceButton.classList.remove('selected');
-            // Show building upgrades, hide science upgrades
+            statsButton.classList.remove('selected');
             upgradeContainer.style.display = 'flex';
-            scienceUpgradeContainer.style.display = 'none';
+            statsContainer.style.display = 'none';
         });
 
-        scienceButton.addEventListener('click', () => {
-            scienceButton.classList.add('selected');
+        statsButton.addEventListener('click', () => {
+            statsButton.classList.add('selected');
             buildingsButton.classList.remove('selected');
-            // Hide building upgrades, show science upgrades
             upgradeContainer.style.display = 'none';
-            scienceUpgradeContainer.style.display = 'flex';
+            statsContainer.style.display = 'flex';
         });
 
         startInterval();
+
+        // Update the website name every 1 second
+        setInterval(() => {
+            document.title = `🍪${formatNumber(Math.floor(cookieCount))} - Cookie Tappers`;
+        }, 1000);
+
     </script>
 </body>
 </html>
