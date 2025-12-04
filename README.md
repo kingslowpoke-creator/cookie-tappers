@@ -1,3 +1,3 @@
 # Welcome to Cookie Tappers !
 
-#New look of it
+Cookie Clicks is now Cookie Tappers
