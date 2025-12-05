@@ -360,10 +360,26 @@
             margin-bottom: 5px;
             color: #333;
         }
-
+        /* --- Music toggle button styles --- */
+        #music-toggle {
+            position: fixed;
+            right: 25px;
+            bottom: 20px;
+            z-index: 2000;
+            padding: 12px 30px;
+            border-radius: 32px;
+            background: #9ea8db;
+            color: black;
+            font-family: 'Sora',sans-serif;
+            font-size: 18px;
+            border: none;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.1);
+        }
+        #music-toggle:hover {
+            background: #c4d1ff;
+        }
     </style>
 </head>
-
 <body>
     <div class="loading-screen">
         <img src="https://static.vecteezy.com/system/resources/thumbnails/008/202/355/small_2x/animation-loading-circle-icon-loading-gif-loading-screen-gif-loading-spinner-gif-loading-animation-loading-on-black-background-free-video.jpg" alt="Loading Image">
@@ -381,9 +397,7 @@
             <button id="stats-button">ⓘStats</button>
             <button id="changelog-button">🛠Changelog</button>
         </div>
-        <!-- Upgrades (buildings) container -->
         <div class="upgrade-container" id="upgrade-container">
-            <!-- ... upgrade item divs ... unchanged ... -->
             <div class="upgrade-item">
                 <img id="autotap-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0u8ut-2ce4b58c-d1cb-45f8-aacb-aa985ba75add.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwdTh1dC0yY2U0YjU4Yy1kMWNiLTQ1ZjgtYWFjYi1hYTk4NWJhNzVhZGQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.YFN4vM6ZWaYbVFiRgCv5BUhO8GWPofIZ4Y_R57chuTI" alt="Autotap">
                 <div id="autotap-label"><strong>Autotap: 0</strong><br><span style="font-weight: normal;">+0.1/s</span></div>
@@ -425,12 +439,10 @@
                 <button id="wizard-button">🍪 330.00M</button>
             </div>
         </div>
-        <!-- Stats container (replaces science upgrades) -->
         <div class="stats-container" id="stats-container">
             <div class="stats-label">Cookies accumulated</div>
             <div class="stat-row" id="total-cookies-row">🍪0</div>
         </div>
-        <!-- Changelog container -->
         <div class="changelog-container" id="changelog-container">
             <div class="changelog-title">🛠Changelog</div>
             <div class="changelog-row"><b>v1.001 (Dec 4, 2025)</b></div>
@@ -440,6 +452,8 @@
         </div>
         <audio id="click-sound" src="click1.wav"></audio>
         <audio id="upgrade-sound" src="buyUpgrade.wav"></audio>
+        <audio id="music-audio" src="music.wav" loop preload="auto"></audio>
+        <button id="music-toggle">Music On</button>
         <div class="user-info" style="display: none;">
             <img src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png" alt="User Profile">
             <span id="username-display"></span>
@@ -515,7 +529,33 @@
         const changelogContainer = document.getElementById('changelog-container');
         const totalCookiesRow = document.getElementById('total-cookies-row');
 
-        // ---- Number Formatters ----
+        const musicAudio = document.getElementById('music-audio');
+        const musicToggleBtn = document.getElementById('music-toggle');
+        let musicOn = true;
+
+        function playMusic() {
+            musicAudio.volume = 1;
+            musicAudio.play();
+            musicToggleBtn.textContent = "Music: On";
+        }
+        function pauseMusic() {
+            musicAudio.pause();
+            musicToggleBtn.textContent = "Music: Off";
+        }
+        musicToggleBtn.addEventListener('click', () => {
+            musicOn = !musicOn;
+            if (musicOn) playMusic(); else pauseMusic();
+        });
+        function enableMusicIfAllowed() {
+            if (musicOn && musicAudio.paused) {
+                musicAudio.play().catch(() => { /* ignore */ });
+            }
+        }
+        musicAudio.addEventListener('ended', function() {
+            if (musicOn) playMusic();
+        });
+        document.body.addEventListener('click', enableMusicIfAllowed);
+
         function formatNumber(number) {
             if (number >= 1000000) {
                 const tier = Math.floor(Math.log10(number) / 3);
@@ -552,7 +592,6 @@
                 return (number).toFixed(1);
             }
         }
-
         function updateDisplay() {
             cookieCountElement.textContent = `🍪${formatNumber(Math.floor(cookieCount))} cookies`;
             perSecondElement.textContent = `${formatPerSecond(cookiesPerSecond)}🍪 per second`;
@@ -574,7 +613,6 @@
             wizardButtonElement.textContent = `🍪 ${formatNumber(Math.floor(wizardCost))}`;
             totalCookiesRow.innerHTML = `🍪${formatNumber(Math.floor(totalCookies))}`;
         }
-
         function createClickerClone(clicks, x, y) {
             const clone = document.createElement('div');
             clone.className = 'clicker-clone';
@@ -582,24 +620,20 @@
             clone.style.top = `${y}px`;
             clone.style.left = `${x}px`;
             document.body.appendChild(clone);
-
             requestAnimationFrame(() => {
                 clone.style.transform = 'translateY(-20px)';
                 clone.style.opacity = '0';
             });
-
             setTimeout(() => {
                 document.body.removeChild(clone);
             }, 300);
         }
-
         function createGoldenCookie(x, y) {
             const goldenCookie = document.createElement('img');
             goldenCookie.src = 'https://shorturl.at/MhDtw';
             goldenCookie.className = 'golden-cookie';
             goldenCookie.style.top = `${y}px`;
             goldenCookie.style.left = `${x}px`;
-
             goldenCookie.addEventListener('click', () => {
                 const bonus = 200 + (cookiesPerSecond / 10);
                 cookieCount += bonus;
@@ -607,19 +641,15 @@
                 updateDisplay();
                 document.body.removeChild(goldenCookie);
             });
-
             document.body.appendChild(goldenCookie);
-
             setTimeout(() => {
                 if (document.body.contains(goldenCookie)) {
                     document.body.removeChild(goldenCookie);
                 }
             }, 5000);
         }
-
         function startInterval() {
             if (intervalId) clearInterval(intervalId);
-
             intervalId = setInterval(() => {
                 cookieCount += cookiesPerSecond / 10;
                 totalCookies += cookiesPerSecond / 10;
@@ -630,7 +660,6 @@
                 }
             }, 1000 / 10);
         }
-
         function checkUpgrades() {
             if (cookieCount >= 100) {
                 document.getElementById('pickaxe-upgrade').style.display = 'flex';
@@ -654,7 +683,6 @@
                 document.getElementById('wizard-upgrade').style.display = 'flex';
             }
         }
-
         function saveProgress(username) {
             const progress = {
                 cookieCount,
@@ -681,7 +709,6 @@
             };
             localStorage.setItem(`cookieClicks_${username}`, JSON.stringify(progress));
         }
-
         function loadProgress(username) {
             const savedProgress = localStorage.getItem(`cookieClicks_${username}`);
             if (savedProgress) {
@@ -711,11 +738,9 @@
                 startInterval();
             }
         }
-
         function updateCookiesPerClick() {
             cookiesPerClick = 8 + Math.exp(Math.log10(cookiesPerSecond / 3));
         }
-
         cookieElement.addEventListener('click', (event) => {
             const now = Date.now();
             if (now - lastClickTime >= 10) {
@@ -727,7 +752,6 @@
                 clickSoundElement.play();
             }
         });
-
         upgradeButtonElement.addEventListener('click', () => {
             if (cookieCount >= upgradeCost) {
                 cookieCount -= upgradeCost;
@@ -739,7 +763,6 @@
                 upgradeSoundElement.play();
             }
         });
-
         pickaxeButtonElement.addEventListener('click', () => {
             if (cookieCount >= pickaxeCost) {
                 cookieCount -= pickaxeCost;
@@ -751,7 +774,6 @@
                 upgradeSoundElement.play();
             }
         });
-
         farmButtonElement.addEventListener('click', () => {
             if (cookieCount >= farmCost) {
                 cookieCount -= farmCost;
@@ -763,7 +785,6 @@
                 upgradeSoundElement.play();
             }
         });
-
         mineButtonElement.addEventListener('click', () => {
             if (cookieCount >= mineCost) {
                 cookieCount -= mineCost;
@@ -775,7 +796,6 @@
                 upgradeSoundElement.play();
             }
         });
-
         factoryButtonElement.addEventListener('click', () => {
             if (cookieCount >= factoryCost) {
                 cookieCount -= factoryCost;
@@ -787,7 +807,6 @@
                 upgradeSoundElement.play();
             }
         });
-
         bankButtonElement.addEventListener('click', () => {
             if (cookieCount >= bankCost) {
                 cookieCount -= bankCost;
@@ -799,7 +818,6 @@
                 upgradeSoundElement.play();
             }
         });
-
         templeButtonElement.addEventListener('click', () => {
             if (cookieCount >= templeCost) {
                 cookieCount -= templeCost;
@@ -811,7 +829,6 @@
                 upgradeSoundElement.play();
             }
         });
-
         wizardButtonElement.addEventListener('click', () => {
             if (cookieCount >= wizardCost) {
                 cookieCount -= wizardCost;
@@ -823,20 +840,17 @@
                 upgradeSoundElement.play();
             }
         });
-
         function initializeGame(username) {
             userInfoElement.style.display = 'flex';
             usernameDisplayElement.textContent = username;
             loadProgress(username);
+            playMusic();
         }
-
-        // Hide loading screen and show username input after 2 seconds
         setTimeout(() => {
             loadingScreen.style.display = 'none';
             usernameContainer.style.display = 'block';
+            pauseMusic();
         }, 2000);
-
-        // Listen for username input and show the game container when entered
         const usernameInput = document.querySelector('.username-container input');
         usernameInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
@@ -852,8 +866,6 @@
                 }
             }
         });
-
-        // Listen for continue button click and show the game container
         continueButton.addEventListener('click', () => {
             let username = usernameInput.value.trim();
             if (!username || username.match(/^\s*$/)) {
@@ -866,16 +878,12 @@
                 initializeGame(username);
             }
         });
-
-        // Save progress every 5 seconds
         setInterval(() => {
             const username = usernameInput.value.trim();
             if (username) {
                 saveProgress(username);
             }
         }, 5000);
-
-        // Segmented control handlers
         buildingsButton.addEventListener('click', () => {
             buildingsButton.classList.add('selected');
             statsButton.classList.remove('selected');
@@ -884,7 +892,6 @@
             statsContainer.style.display = 'none';
             changelogContainer.style.display = 'none';
         });
-
         statsButton.addEventListener('click', () => {
             statsButton.classList.add('selected');
             buildingsButton.classList.remove('selected');
@@ -893,7 +900,6 @@
             statsContainer.style.display = 'flex';
             changelogContainer.style.display = 'none';
         });
-
         changelogButton.addEventListener('click', () => {
             changelogButton.classList.add('selected');
             buildingsButton.classList.remove('selected');
@@ -902,15 +908,10 @@
             statsContainer.style.display = 'none';
             changelogContainer.style.display = 'flex';
         });
-
-
         startInterval();
-
-        // Update the website name every 1 second
         setInterval(() => {
             document.title = `🍪${formatNumber(Math.floor(cookieCount))} - Cookie Tappers`;
         }, 1000);
-
     </script>
 </body>
 </html>
