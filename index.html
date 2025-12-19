@@ -813,7 +813,7 @@
         document.body.addEventListener('click', enableMusicIfAllowed);
 
         function formatNumber(number) {
-            if (number >= 1000) {
+            if (number >= 100000) {
                 const tier = Math.floor(Math.log10(number) / 3);
                 const suffix = suffixes[tier - 1];
                 const scale = Math.pow(10, tier * 3);
@@ -823,7 +823,7 @@
             return Math.floor(number).toLocaleString();
         }
         function formatPerSecond(number) {
-            if (number >= 1000) {
+            if (number >= 100000) {
                 const tier = Math.floor(Math.log10(number) / 3);
                 const suffix = suffixes[tier - 1];
                 const scale = Math.pow(10, tier * 3);
@@ -836,7 +836,7 @@
             }
         }
         function formatPerClick(number) {
-            if (number >= 1000) {
+            if (number >= 100000) {
                 const tier = Math.floor(Math.log10(number) / 3);
                 const suffix = suffixes[tier - 1];
                 const scale = Math.pow(10, tier * 3);
@@ -907,8 +907,8 @@
         function startInterval() {
             if (intervalId) clearInterval(intervalId);
             intervalId = setInterval(() => {
-                cookieCount += cookiesPerSecond / 20;
-                totalCookies += cookiesPerSecond / 20;
+                cookieCount += cookiesPerSecond / 10;
+                totalCookies += cookiesPerSecond / 10;
                 updateDisplay();
                 checkUpgrades();
                 if (maxUpgradeReached) {
