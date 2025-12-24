@@ -31,7 +31,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: black;
+            background-color: #343747;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -42,9 +42,46 @@
             font-family: 'Cause', sans-serif;
         }
 
-        .loading-screen img {
-            width: 360px;
-            height: 200px;
+        /* Replace the loading image with an inline SVG spinner.
+           Scoped to .loading-screen to avoid affecting other SVGs on the page. */
+        .loading-screen svg {
+            width: 3.25em;
+            transform-origin: center;
+            animation: rotate4 1.5s linear infinite;
+            display: block;
+            margin-bottom: 18px;
+        }
+
+        .loading-screen circle {
+            fill: none;
+            stroke: #9ea8db;
+            stroke-width: 5;
+            stroke-dasharray: 1, 200;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+            animation: dash4 1.5s ease-in-out infinite;
+        }
+
+        @keyframes rotate4 {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes dash4 {
+            0% {
+                stroke-dasharray: 1, 200;
+                stroke-dashoffset: 0;
+            }
+
+            50% {
+                stroke-dasharray: 90, 200;
+                stroke-dashoffset: -35px;
+            }
+
+            100% {
+                stroke-dashoffset: -125px;
+            }
         }
 
         .loading-screen .version {
@@ -140,7 +177,7 @@
         }
 
         .segmented-control button:hover:not(.selected) {
-            background-color: darkgray;
+            background-color: #daa8e6;
         }
 
         .upgrade-container {
@@ -299,7 +336,7 @@
         }
 
         .username-container button:hover {
-            background-color: lightgray;
+            background-color: #3e456b;
         }
 
         .user-info {
@@ -515,7 +552,7 @@
         }
 
         body.dark-mode .upgrade-item button {
-            background-color: #15192b;
+            background-color: #3e456b;
             color: white;
             box-shadow: 0 2px 15px rgba(0,0,0,0.3);
         }
@@ -595,8 +632,11 @@
     </style>
 </head>
 <body>
-    <div class="loading-screen">
-        <img src="https://static.vecteezy.com/system/resources/thumbnails/008/202/355/small_2x/animation-loading-circle-icon-loading-gif-loading-screen-gif-loading-spinner-gif-loading-animation-loading-on-black-background-free-video.jpg" alt="Loading Image">
+    <div class="loading-screen" role="status" aria-live="polite">
+        <!-- Inline SVG spinner (replaces the previous loading image) -->
+        <svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">
+            <circle cx="25" cy="25" r="20"></circle>
+        </svg>
         Game loading...
         <div class="version">Game in progress</div>
     </div>
@@ -615,41 +655,41 @@
         <div class="upgrade-container" id="upgrade-container">
             <div class="upgrade-item">
                 <img id="autotap-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0u8ut-2ce4b58c-d1cb-45f8-aacb-aa985ba75add.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwdTh1dC0yY2U0YjU4Yy1kMWNiLTQ1ZjgtYWFjYi1hYTk4NWJhNzVhZGQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.YFN4vM6ZWaYbVFiRgCv5BUhO8GWPofIZ4Y_R57chuTI" alt="Autotap">
-                <div id="autotap-label"><strong>Autotap: 0</strong><br><span style="font-weight: normal;">+0.1/s</span></div>
+                <div id="autotap-label"><strong>Autotap: 0</strong><br><span style="font-weight: normal;">+0.2/s</span></div>
                 <button id="upgrade-button">🍪 15</button>
             </div>
             <div class="upgrade-item" id="pickaxe-upgrade" style="display: none;">
                 <img id="pickaxe-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0u9zr-6ea65aed-c1af-48f8-9493-d05f1b152ca4.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwdTl6ci02ZWE2NWFlZC1jMWFmLTQ4ZjgtOTQ5My1kMDVmMWIxNTJjYTQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.6rO1C2diBdMBVXxJXLJ4es4hUwHFrDNeC-XD7fc7swQ" alt="Pickaxe">
-                <div id="pickaxe-label"><strong>Pickaxe (0)</strong><br><span style="font-weight: normal;">+1/s</span></div>
+                <div id="pickaxe-label"><strong>Pickaxe (0)</strong><br><span style="font-weight: normal;">+1.5/s</span></div>
                 <button id="pickaxe-button">🍪 100</button>
             </div>
             <div class="upgrade-item" id="farm-upgrade" style="display: none;">
                 <img id="farm-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl47c32-b5619189-c091-4640-b1fe-a978b1e8f094.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw0N2MzMi1iNTYxOTE4OS1jMDkxLTQ2NDAtYjFmZS1hOTc4YjFlOGYwOTQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.aXycWSU80CJ55SWPeUbE6cIVPTRmTfMnUnh3trqp2t4" alt="Farm">
-                <div id="farm-label"><strong>Farm (0)</strong><br><span style="font-weight: normal;">+8/s</span></div>
+                <div id="farm-label"><strong>Shovel: ${ownedFarms}</strong><br><span style="font-weight: normal;">+7/s</span></div>
                 <button id="farm-button">🍪 1.1k</button>
             </div>
             <div class="upgrade-item" id="mine-upgrade" style="display: none;">
                 <img id="mine-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl47f1q-200fbe33-0d51-4a78-80a6-9f7b0ae55263.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw0N2YxcS0yMDBmYmUzMy0wZDUxLTRhNzgtODBhNi05ZjdiMGFlNTUyNjMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.OtTs-tsRV4vGniwOTVZ5k3_3FHBe5xY7oHCEeYUM_zc" alt="Mine">
-                <div id="mine-label"><strong>Mine (0)</strong><br><span style="font-weight: normal;">+54/s</span></div>
+                <div id="mine-label"><strong>Crystal: ${ownedMines}</strong><br><span style="font-weight: normal;">+54/s</span></div>
                 <button id="mine-button">🍪 16.0k</button>
             </div>
             <div class="upgrade-item" id="factory-upgrade" style="display: none;">
                 <img id="factory-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl47gyd-7f66d6a9-4550-49a9-82f0-24dbe94b0a5d.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw0N2d5ZC03ZjY2ZDZhOS00NTUwLTQ5YTktODJmMC0yNGRiZTk0YjBhNWQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.8X86sdDf8OaFSeJ7PLO7LFAGpfHjzgc3YNbx4o-iLH4" alt="Factory">
-                <div id="factory-label"><strong>Factory (0)</strong><br><span style="font-weight: normal;">+280 /sec</span></div>
+                <div id="factory-label"><strong>Factory: ${ownedFactories}</strong><br><span style="font-weight: normal;">+280/s</span></div>
                 <button id="factory-button">🍪 130.0k</button>
             </div>
             <div class="upgrade-item" id="bank-upgrade" style="display: none;">
                 <img id="bank-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl47hov-ebbc9e6d-2137-4648-864a-e16b4b2809fc.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw0N2hvdi1lYmJjOWU2ZC0yMTM3LTQ2NDgtODY0YS1lMTZiNGIyODA5ZmMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.CQ0iKFEXwvsbw7v719_4SFXc4u-kCuFlp4CgIUtyFtw" alt="Bank">
-                <div id="bank-label"><strong>Bank (0)</strong><br><span style="font-weight: normal;">+1,700 /sec</span></div>
+                <div id="bank-label"><strong>Shield: ${ownedBanks}</strong><br><span style="font-weight: normal;">+1.7k/s</span></div>
                 <button id="bank-button">🍪 870.0k</button>
             </div>
             <div class="upgrade-item" id="temple-upgrade" style="display: none;">
-                <img id="temple-image" src="https://shorturl.at/aVOxt" alt="Temple">
+                <img id="temple-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl5in5y-7c1d358e-086c-4bbf-97a6-d98fa4c3ca26.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw1aW41eS03YzFkMzU4ZS0wODZjLTRiYmYtOTdhNi1kOThmYTRjM2NhMjYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.3pe6bk3A5O3nw1ahjXYNPdL-nyyPGcgyhVWMloEeeFc" alt="Temple">
                 <div id="temple-label"><strong>Temple (0)</strong><br><span style="font-weight: normal;">+7,800 /sec</span></div>
                 <button id="temple-button">🍪 20.0m</button>
             </div>
             <div class="upgrade-item" id="wizard-upgrade" style="display: none;">
-                <img id="wizard-image" src="https://shorturl.at/0ydFQ" alt="Wizard Tower">
+                <img id="wizard-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl5isz8-c7a36a21-9587-44b8-b201-f14d943d04b2.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw1aXN6OC1jN2EzNmEyMS05NTg3LTQ0YjgtYjIwMS1mMTRkOTQzZDA0YjIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.lhYyFE5zaT9OvBKt3S4AanZ9KGZFMPQK_PEYjO1hjGk" alt="Wizard Tower">
                 <div id="wizard-label"><strong>Wizard Tower (0)</strong><br><span style="font-weight: normal;">+39,000 /sec</span></div>
                 <button id="wizard-button">🍪 330.0m</button>
             </div>
@@ -660,7 +700,9 @@
         </div>
         <div class="changelog-container" id="changelog-container">
             <div class="changelog-title">🛠Changelog</div>
-            <div class="changelog-row"><b>v1.001 (Dec 4, 2025)</b></div>
+            <div class="changelog-row"><b>Game in beta (Dec 24, 2025)</b></div>
+            <div class="changelog-row">- Try out the game until Jan 7</div>
+            <div class="changelog-row"><b>v0.0.1 (Dec 4, 2025)</b></div>
             <div class="changelog-row">- Beta is coming soon - Just implementing the UI and bug fixes</div>
             <div class="changelog-row">- Changed background</div>
             <div class="changelog-row">- New features coming soon!</div>
@@ -715,9 +757,9 @@
         let templeCost = 20000000;
         let wizardCost = 330000000;
         let cookiesPerSecond = 0;
-        let autotapCps = 0.1;
-        let pickaxeCps = 1;
-        let farmCps = 8;
+        let autotapCps = 0.2;
+        let pickaxeCps = 1.5;
+        let farmCps = 7;
         let mineCps = 54;
         let factoryCps = 280;
         let bankCps = 1700;
@@ -781,6 +823,7 @@
             musicAudio.volume = val / 100;
         }
         function setSfxVolume(val) {
+            // Update base elements' volume values so clones inherit the same volume
             clickSoundElement.volume = val / 100;
             upgradeSoundElement.volume = val / 100;
         }
@@ -812,6 +855,7 @@
         });
         document.body.addEventListener('click', enableMusicIfAllowed);
 
+        // Helper to format numbers for display
         function formatNumber(number) {
             if (number >= 100000) {
                 const tier = Math.floor(Math.log10(number) / 3);
@@ -848,17 +892,18 @@
                 return (number).toFixed(1);
             }
         }
+
         function updateDisplay() {
             cookieCountElement.textContent = `🍪${formatNumber(Math.floor(cookieCount))}`;
             perSecondElement.textContent = `cps: ${formatPerSecond(cookiesPerSecond)}`;
-            document.getElementById('autotap-label').innerHTML = `<strong>Autotap: ${ownedAutotaps}</strong><br><span style="font-weight: normal;">+0.1/s</span>`;
-            document.getElementById('pickaxe-label').innerHTML = `<strong>Pickaxe: ${ownedPickaxes}</strong><br><span style="font-weight: normal;">+1/s</span>`;
-            document.getElementById('farm-label').innerHTML = `<strong>Shovel: ${ownedFarms}</strong><br><span style="font-weight: normal;">+8/s</span>`;
+            document.getElementById('autotap-label').innerHTML = `<strong>Autotap: ${ownedAutotaps}</strong><br><span style="font-weight: normal;">+0.2/s</span>`;
+            document.getElementById('pickaxe-label').innerHTML = `<strong>Pickaxe: ${ownedPickaxes}</strong><br><span style="font-weight: normal;">+1.5/s</span>`;
+            document.getElementById('farm-label').innerHTML = `<strong>Shovel: ${ownedFarms}</strong><br><span style="font-weight: normal;">+7/s</span>`;
             document.getElementById('mine-label').innerHTML = `<strong>Crystal: ${ownedMines}</strong><br><span style="font-weight: normal;">+54/s</span>`;
             document.getElementById('factory-label').innerHTML = `<strong>Factory: ${ownedFactories}</strong><br><span style="font-weight: normal;">+280/s</span>`;
             document.getElementById('bank-label').innerHTML = `<strong>Shield: ${ownedBanks}</strong><br><span style="font-weight: normal;">+1.7k/s</span>`;
-            document.getElementById('temple-label').innerHTML = `<strong>Temple: ${ownedTemples}</strong><br><span style="font-weight: normal;">+7.8k/s</span>`;
-            document.getElementById('wizard-label').innerHTML = `<strong>Wizard Tower: ${ownedWizards}</strong><br><span style="font-weight: normal;">+39.0k/s</span>`;
+            document.getElementById('temple-label').innerHTML = `<strong>Woodboat: ${ownedTemples}</strong><br><span style="font-weight: normal;">+7.8k/s</span>`;
+            document.getElementById('wizard-label').innerHTML = `<strong>Gametower: ${ownedWizards}</strong><br><span style="font-weight: normal;">+39.0k/s</span>`;
             upgradeButtonElement.textContent = `🍪 ${formatNumber(Math.floor(upgradeCost))}`;
             pickaxeButtonElement.textContent = `🍪 ${formatNumber(Math.floor(pickaxeCost))}`;
             farmButtonElement.textContent = `🍪 ${formatNumber(Math.floor(farmCost))}`;
@@ -869,6 +914,7 @@
             wizardButtonElement.textContent = `🍪 ${formatNumber(Math.floor(wizardCost))}`;
             totalCookiesRow.innerHTML = `🍪${formatNumber(Math.floor(totalCookies))}`;
         }
+
         function createClickerClone(clicks, x, y) {
             const clone = document.createElement('div');
             clone.className = 'clicker-clone';
@@ -904,6 +950,7 @@
                 }
             }, 5000);
         }
+
         function startInterval() {
             if (intervalId) clearInterval(intervalId);
             intervalId = setInterval(() => {
@@ -916,6 +963,7 @@
                 }
             }, 1000 / 10);
         }
+
         function checkUpgrades() {
             if (cookieCount >= 100) {
                 document.getElementById('pickaxe-upgrade').style.display = 'flex';
@@ -939,6 +987,7 @@
                 document.getElementById('wizard-upgrade').style.display = 'flex';
             }
         }
+
         function saveProgress(username) {
             const progress = {
                 cookieCount,
@@ -997,6 +1046,40 @@
         function updateCookiesPerClick() {
             cookiesPerClick = 8 + Math.exp(Math.log10(cookiesPerSecond / 3));
         }
+
+        // --- SFX playback helper ---
+        // Using cloned nodes avoids the "only play once while the element is still playing" issue.
+        // This lets short SFX overlap and play for rapid clicks/inputs.
+        function playSfx(baseAudioElement) {
+            if (!baseAudioElement) return;
+            try {
+                // cloneNode(true) copies attributes like src; the clone inherits the base volume.
+                const sfx = baseAudioElement.cloneNode(true);
+                // If the base element volume was updated via setSfxVolume, clone will inherit it.
+                sfx.volume = baseAudioElement.volume;
+                // Start from beginning in case the cloned element has progress (shouldn't, but safe)
+                if (sfx.readyState >= 2) sfx.currentTime = 0;
+                sfx.play().catch(() => {
+                    // ignore play errors (autoplay policies, etc.)
+                });
+                // Remove the element from memory once it's finished playing to avoid buildup.
+                sfx.addEventListener('ended', () => {
+                    if (sfx.parentNode) sfx.parentNode.removeChild(sfx);
+                });
+                // Append to body so it's part of the document (some browsers require it)
+                // but keep it off-screen / invisible by default.
+                sfx.style.position = 'absolute';
+                sfx.style.left = '-9999px';
+                document.body.appendChild(sfx);
+            } catch (err) {
+                // Fallback: attempt to restart the original element if cloning failed
+                try {
+                    baseAudioElement.currentTime = 0;
+                    baseAudioElement.play().catch(() => {});
+                } catch (e) {}
+            }
+        }
+
         cookieElement.addEventListener('click', (event) => {
             const now = Date.now();
             if (now - lastClickTime >= 10) {
@@ -1005,7 +1088,8 @@
                 totalCookies += cookiesPerClick;
                 createClickerClone(cookiesPerClick, event.clientX, event.clientY);
                 updateDisplay();
-                clickSoundElement.play();
+                // Use cloned audio to allow overlapping/rapid playback
+                playSfx(clickSoundElement);
             }
         });
         upgradeButtonElement.addEventListener('click', () => {
@@ -1016,7 +1100,8 @@
                 ownedAutotaps++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
+                // Use cloned audio so multiple purchases / rapid clicks don't get silenced
+                playSfx(upgradeSoundElement);
             }
         });
         pickaxeButtonElement.addEventListener('click', () => {
@@ -1027,7 +1112,7 @@
                 ownedPickaxes++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
+                playSfx(upgradeSoundElement);
             }
         });
         farmButtonElement.addEventListener('click', () => {
@@ -1038,7 +1123,7 @@
                 ownedFarms++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
+                playSfx(upgradeSoundElement);
             }
         });
         mineButtonElement.addEventListener('click', () => {
@@ -1049,7 +1134,7 @@
                 ownedMines++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
+                playSfx(upgradeSoundElement);
             }
         });
         factoryButtonElement.addEventListener('click', () => {
@@ -1060,7 +1145,7 @@
                 ownedFactories++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
+                playSfx(upgradeSoundElement);
             }
         });
         bankButtonElement.addEventListener('click', () => {
@@ -1071,7 +1156,7 @@
                 ownedBanks++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
+                playSfx(upgradeSoundElement);
             }
         });
         templeButtonElement.addEventListener('click', () => {
@@ -1082,7 +1167,7 @@
                 ownedTemples++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
+                playSfx(upgradeSoundElement);
             }
         });
         wizardButtonElement.addEventListener('click', () => {
@@ -1093,7 +1178,7 @@
                 ownedWizards++;
                 updateDisplay();
                 startInterval();
-                upgradeSoundElement.play();
+                playSfx(upgradeSoundElement);
             }
         });
         function initializeGame(username) {
