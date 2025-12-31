@@ -908,7 +908,7 @@ body.dark-mode .upgrades-container .nothing {
     display: none;
     align-items: flex-start;
     flex-direction: column;
-    background-color: white;
+    background-color: #ffffffc9;
     border-radius: 30px;
     padding: 16px;
     max-height: 380px;
