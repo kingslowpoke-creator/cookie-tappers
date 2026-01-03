@@ -6,6 +6,8 @@
     <title>Cookie Tappers</title>
     <link href="https://fonts.googleapis.com/css2?family=Cause:wght@100..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl7kpss-38fdecaf-2e7f-48ba-8624-004ddd61744b.png/v1/fit/w_500,h_500/cookie_icon_by_unknown9394998_dl7kpss-375w-2x.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NTAwIiwicGF0aCI6Ii9mL2FmOGJjMTEzLWQ5YTQtNDBjZi05MDc3LTA2YjY3M2M1ODNlMC9kbDdrcHNzLTM4ZmRlY2FmLTJlN2YtNDhiYS04NjI0LTAwNGRkZDYxNzQ0Yi5wbmciLCJ3aWR0aCI6Ijw9NTAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.-Mk_m1y7HraqrX13dXB6JJdW43DJ3rrji_-dvW-b0BQ">
+
 </head>
 <body>
     <div class="loading-screen" role="status" aria-live="polite">
@@ -117,31 +119,28 @@
         <div class="settings-container" id="settings-container">
             <div class="settings-label">Settings</div>
             <div class="settings-row">
-                <span class="settings-slider-label">Music volume</span>
+                <span class="settings-slider-label">Music</span>
                 <input type="range" min="0" max="100" value="100" class="settings-slider" id="music-volume">
                 <span class="settings-value" id="music-volume-val">100</span>
             </div>
             <div class="settings-row">
-                <span class="settings-slider-label">Sfx volume</span>
+                <span class="settings-slider-label">SFX</span>
                 <input type="range" min="0" max="100" value="100" class="settings-slider" id="sfx-volume">
                 <span class="settings-value" id="sfx-volume-val">100</span>
             </div>
 
             <div class="settings-row" style="align-items:center; gap:12px;">
-                <span class="settings-slider-label">Dark mode</span>
+                <span class="settings-slider-label">Dark theme</span>
 
-                <div class="theme" style="margin-left: 12px;">
-                    <!-- input must come first to allow the CSS sibling selectors to work -->
-                    <input type="checkbox" id="dark-toggle" class="theme__toggle" aria-label="Dark mode toggle">
-                    <div class="theme__fill" aria-hidden="true"></div>
-                    <div class="theme__icon" aria-hidden="true" style="position: relative; width: 2em; height: 2em;">
-                    </div>
+                <div class="switch" style="margin-left: 12px;">
+                    <!-- simplified switch markup; styles scoped to .switch input -->
+                    <input type="checkbox" id="dark-toggle" aria-label="Dark mode toggle">
                 </div>
             </div>
         </div>
         <audio id="click-sound" src="click.wav"></audio>
         <audio id="upgrade-sound" src="buyUpgrade.wav"></audio>
-        <audio id="music-audio" src="music.ogg" loop preload="auto"></audio>
+        <audio id="music-audio" src="game_music.ogg" loop preload="auto"></audio>
         <div class="user-info" style="display: none;">
             <img src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png" alt="User Profile">
             <span id="username-display"></span>
