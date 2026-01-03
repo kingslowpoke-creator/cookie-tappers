@@ -1,6 +1,87 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Welcome message in developer console
-    console.log('Welcome to Cookie Tappers');
+    /**
+     * Safely create a native browser notification (may throw on insecure origins or when blocked).
+     */
+    function createNotification(title, message) {
+      if (!("Notification" in window)) {
+        console.warn("This browser does not support desktop notifications.");
+        return false;
+      }
+      try {
+        const options = {
+          body: message,
+          icon: "https://example.com/icon.png",
+          badge: "https://example.com/badge.png",
+          vibrate: [200, 100, 200],
+          data: { url: window.location.href }
+        };
+        const notification = new Notification(title, options);
+        notification.onclick = (event) => {
+          event.preventDefault();
+          window.focus();
+          try { notification.close(); } catch (e) {}
+        };
+        return true;
+      } catch (err) {
+        console.warn("Failed to create Notification:", err);
+        return false;
+      }
+    }
+
+    /**
+     * Request permission (supports both Promise and callback forms) and show notification if granted.
+     * Call this directly from a user gesture (click/keypress handlers).
+     */
+    function requestPermissionAndNotify(title, message) {
+      if (!("Notification" in window)) {
+        console.warn("Notifications not supported.");
+        return;
+      }
+
+      // If already granted, create it immediately
+      if (Notification.permission === 'granted') {
+        if (!createNotification(title, message)) {
+          // fallback if notifications are blocked or fail (e.g. insecure origin)
+          alert(`${title}\n\n${message}`);
+        }
+        return;
+      }
+
+      // Use the callback form and also handle promise form if returned
+      const handleResult = (perm) => {
+        try {
+          if (perm === 'granted') {
+            const ok = createNotification(title, message);
+            if (!ok) {
+              alert(`${title}\n\n${message}`);
+            }
+          } else {
+            console.log('Notification permission result:', perm);
+          }
+        } catch (err) {
+          console.error('Error handling permission result:', err);
+        }
+      };
+
+      try {
+        // Some browsers return a Promise, others expect a callback
+        const maybePromise = Notification.requestPermission(handleResult);
+        if (maybePromise && typeof maybePromise.then === 'function') {
+          maybePromise.then(handleResult).catch((err) => {
+            console.warn('requestPermission promise rejected:', err);
+          });
+        }
+      } catch (e) {
+        // Very old fallback (shouldn't be needed)
+        try {
+          Notification.requestPermission(function (perm) {
+            handleResult(perm);
+          });
+        } catch (err) {
+          console.warn('Notification.requestPermission failed completely:', err);
+        }
+      }
+    }
 
     // --- Variables ---
     let cookieCount = 0;
@@ -720,6 +801,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             username = username.replace(/[^a-zA-Z0-9_.]/g, '');
             if (username) {
+                // Request notification permission and show the welcome notification as part of the same user gesture.
+                requestPermissionAndNotify(`Welcome, ${username}!`, "Thanks for starting Cookie Tappers!");
+
                 usernameContainer.style.display = 'none';
                 container.style.display = 'block';
                 initializeGame(username);
@@ -733,6 +817,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         username = username.replace(/[^a-zA-Z0-9_.]/g, '');
         if (username) {
+            // Request notification permission and show the welcome notification as part of the same user gesture.
+            requestPermissionAndNotify(`Welcome, ${username}!`, "Thanks for starting Cookie Tappers!");
+
             usernameContainer.style.display = 'none';
             container.style.display = 'block';
             initializeGame(username);
