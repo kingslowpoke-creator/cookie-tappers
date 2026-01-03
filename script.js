@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalBuildingsRow = document.getElementById('total-buildings-row');
 
     const musicAudio = document.getElementById('music-audio');
-    // dark toggle: now targets the new theme__toggle checkbox
+    // dark toggle: now targets the new theme switch checkbox
     const darkCheckbox = document.getElementById('dark-toggle');
 
     // --- Volume Logic ---
@@ -108,15 +108,27 @@ document.addEventListener('DOMContentLoaded', function () {
         if (clickSoundElement) clickSoundElement.volume = val / 100;
         if (upgradeSoundElement) upgradeSoundElement.volume = val / 100;
     }
+
+    // update slider track background to show filled portion (colored) + remainder grey
+    function updateSliderBackground(slider, fillColor = '#daa8e6', emptyColor = '#ededed') {
+        if (!slider) return;
+        const val = Number(slider.value);
+        // When val is 0 it will be all grey; when 100 all filled
+        slider.style.background = `linear-gradient(90deg, ${fillColor} ${val}%, ${emptyColor} ${val}%)`;
+    }
+
+    // bind slider inputs and update backgrounds
     musicVolumeSlider && musicVolumeSlider.addEventListener('input', (e) => {
         const value = parseInt(e.target.value, 10);
         musicVolumeVal.textContent = value;
         setMusicVolume(value);
+        updateSliderBackground(e.target);
     });
     sfxVolumeSlider && sfxVolumeSlider.addEventListener('input', (e) => {
         const value = parseInt(e.target.value, 10);
         sfxVolumeVal.textContent = value;
         setSfxVolume(value);
+        updateSliderBackground(e.target);
     });
 
     let musicOn = true;
@@ -142,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // NOTE: suffix (k,m,b...) will be wrapped in <span class="num-suffix"> so
     // it can be colored differently in CSS (light/dark).
     function formatNumber(number) {
-        if (number >= 1000000) {
+        if (number >= 1000) {
             const tier = Math.floor(Math.log10(number) / 3);
             const suffix = suffixes[tier - 1] || '';
             const scale = Math.pow(10, tier * 3);
@@ -154,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Plain-text formatter for use in document.title and other text-only contexts
     function formatNumberPlain(number) {
-        if (number >= 1000000) {
+        if (number >= 1000) {
             const tier = Math.floor(Math.log10(number) / 3);
             if (tier === 0) return Math.floor(number).toLocaleString();
             const suffix = suffixes[tier - 1] || '';
@@ -167,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function formatPerSecond(number) {
-        if (number >= 1000000) {
+        if (number >= 1000) {
             const tier = Math.floor(Math.log10(number) / 3);
             const suffix = suffixes[tier - 1] || '';
             const scale = Math.pow(10, tier * 3);
@@ -180,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     function formatPerClick(number) {
-        if (number >= 1000000) {
+        if (number >= 1000) {
             const tier = Math.floor(Math.log10(number) / 3);
             const suffix = suffixes[tier - 1] || '';
             const scale = Math.pow(10, tier * 3);
@@ -194,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     // Plain-text per-click used for document.title when we want plain text
     function formatPerClickPlain(number) {
-        if (number >= 1000000) {
+        if (number >= 1000) {
             const tier = Math.floor(Math.log10(number) / 3);
             const suffix = suffixes[tier - 1] || '';
             const scale = Math.pow(10, tier * 3);
@@ -717,7 +729,7 @@ document.addEventListener('DOMContentLoaded', function () {
     continueButton.addEventListener('click', () => {
         let username = usernameInput.value.trim();
         if (!username || username.match(/^\s*$/)) {
-            username = `Player${Math.floor(Math.random() * 1000000000)}`;
+            username = `player${Math.floor(Math.random() * 1000000000)}`;
         }
         username = username.replace(/[^a-zA-Z0-9_.]/g, '');
         if (username) {
@@ -736,12 +748,19 @@ document.addEventListener('DOMContentLoaded', function () {
     startInterval();
     setInterval(() => {
         // Use plain text formatter in the tab title (no HTML)
-        document.title = `${formatNumber(cookieCount)} cookies - Cookie Tappers`;
+        document.title = `${formatNumber(cookieCount)} cookies`;
     }, 1000);
 
     // Set initial volumes on load
-    setMusicVolume(musicVolumeSlider.value);
-    setSfxVolume(sfxVolumeSlider.value);
+    // make sure slider visuals reflect the value
+    if (musicVolumeSlider) {
+        setMusicVolume(musicVolumeSlider.value);
+        updateSliderBackground(musicVolumeSlider);
+    }
+    if (sfxVolumeSlider) {
+        setSfxVolume(sfxVolumeSlider.value);
+        updateSliderBackground(sfxVolumeSlider);
+    }
 
     // Initial render
     computeCookiesPerSecond();
