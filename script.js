@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function requestPermissionAndNotify(title, message) {
       if (!("Notification" in window)) {
-        console.warn("Notifications not supported.");
+        console.warn("Notifications not supported");
         // fallback: alert to ensure the user sees the message
         try { alert(title + "\n\n" + message); } catch (e) {}
         return;
