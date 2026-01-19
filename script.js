@@ -818,7 +818,7 @@ document.addEventListener('DOMContentLoaded', function () {
         username = username.replace(/[^a-zA-Z0-9_.]/g, '');
         if (username) {
             // Request notification permission and show the welcome notification as part of the same user gesture.
-            requestPermissionAndNotify(`Welcome, ${username}!`, "Thanks for starting Cookie Tappers!");
+            requestPermissionAndNotify(`Welcome`, "You've earned 309.7k cookies while away");
 
             usernameContainer.style.display = 'none';
             container.style.display = 'block';
