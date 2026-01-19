@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Cookie Tappers</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cause:wght@100..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl7kpss-38fdecaf-2e7f-48ba-8624-004ddd61744b.png/v1/fit/w_500,h_500/cookie_icon_by_unknown9394998_dl7kpss-375w-2x.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NTAwIiwicGF0aCI6Ii9mL2FmOGJjMTEzLWQ5YTQtNDBjZi05MDc3LTA2YjY3M2M1ODNlMC9kbDdrcHNzLTM4ZmRlY2FmLTJlN2YtNDhiYS04NjI0LTAwNGRkZDYxNzQ0Yi5wbmciLCJ3aWR0aCI6Ijw9NTAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.-Mk_m1y7HraqrX13dXB6JJdW43DJ3rrji_-dvW-b0BQ">
 
+    <!-- Preload local fonts for better performance -->
+    <link rel="prefetch" href="neo1.otf" as="font" type="font/otf" crossorigin>
+    <link rel="prefetch" href="neo2.otf" as="font" type="font/otf" crossorigin>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl7kpss-efb9b50c-edb4-41ea-ac4e-ca3f93c6c189.png/v1/fit/w_800,h_800/cookie_tappers_icon_by_unknown9394998_dl7kpss-414w-2x.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9ODAwIiwicGF0aCI6Ii9mL2FmOGJjMTEzLWQ5YTQtNDBjZi05MDc3LTA2YjY3M2M1ODNlMC9kbDdrcHNzLWVmYjliNTBjLWVkYjQtNDFlYS1hYzRlLWNhM2Y5M2M2YzE4OS5wbmciLCJ3aWR0aCI6Ijw9ODAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.YfBN1PGTuSr7LJEBdAMnkWYoB_tXkvt9KvwOa-fCT9E">
 </head>
 <body>
     <div class="loading-screen" role="status" aria-live="polite">
@@ -15,21 +18,21 @@
         <svg viewBox="0 0 50 50" aria-hidden="true" focusable="false">
             <circle cx="25" cy="25" r="20"></circle>
         </svg>
-        Game loading...
-        <div class="version">Game in progress</div>
+        Loading
+        <div class="version">Work in progress</div>
     </div>
     <div class="container">
         <div id="cookie-count"></div>
         <div id="per-second">0.0/s</div>
         <div class="cookie-section">
-            <img id="cookie" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0n5e1-7f8a7443-3e72-4878-b1ec-0741fb022c86.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwbjVlMS03ZjhhNzQ0My0zZTcyLTQ4NzgtYjFlYy0wNzQxZmIwMjJjODYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.2LafT9kIKBp0uDpf7_g9O_a2F2O9ZqH6EaJfCgxTG48" alt="Cookie">
+            <img id="cookie" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dlari1p-8299c654-c60e-4599-ad02-9b855760cb90.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGxhcmkxcC04Mjk5YzY1NC1jNjBlLTQ1OTktYWQwMi05Yjg1NTc2MGNiOTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.No9AqL4z1s9AiBtq7VqRdEYWFMW5BdqHxpZ_ViRiKnc" alt="Cookie">
         </div>
         <div class="segmented-control" role="tablist" aria-label="Tabs">
             <button id="buildings-button" class="selected" aria-pressed="true">🏡</button>
             <button id="upgrades-button" aria-pressed="false">⬆️</button>
             <button id="stats-button" aria-pressed="false">ⓘ</button>
             <button id="changelog-button" aria-pressed="false">🛠</button>
-            <button id="settings-button" aria-pressed="false">⚙️</button>
+            <button id="settings-button" aria-pressed="false">⚙</button>
         </div>
 
         <!-- UPGRADE (Buildings) CONTAINER -->
@@ -38,49 +41,65 @@
 
             <div class="upgrade-item">
                 <img id="autotap-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0u8ut-2ce4b58c-d1cb-45f8-aacb-aa985ba75add.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwdTh1dC0yY2U0YjU4Yy1kMWNiLTQ1ZjgtYWFjYi1hYTk4NWJhNzVhZGQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.YFN4vM6ZWaYbVFiRgCv5BUhO8GWPofIZ4Y_R57chuTI" alt="Autotap">
-                <div class="label" id="autotap-label"><strong>Autotap: 0</strong><span class="subtitle">+0.2/s</span></div>
+                <div class="label tooltip" id="autotap-label"><strong>Autotap: 0</strong><span class="subtitle">+0.2/s</span>
+                    <span class="tooltiptext" id="autotap-tooltip">0.00% of cps<br>0 produced so far</span>
+                </div>
                 <button id="upgrade-button"><!-- JS will insert cookie icon + cost --> </button>
             </div>
 
             <div class="upgrade-item" id="pickaxe-upgrade" style="display: none;">
                 <img id="pickaxe-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl0u9zr-6ea65aed-c1af-48f8-9493-d05f1b152ca4.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGwwdTl6ci02ZWE2NWFlZC1jMWFmLTQ4ZjgtOTQ5My1kMDVmMWIxNTJjYTQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.6rO1C2diBdMBVXxJXLJ4es4hUwHFrDNeC-XD7fc7swQ" alt="Pickaxe">
-                <div class="label" id="pickaxe-label"><strong>Pickaxe (0)</strong><span class="subtitle">+1.5/s</span></div>
+                <div class="label tooltip" id="pickaxe-label"><strong>Pickaxe (0)</strong><span class="subtitle">+1.5/s</span>
+                    <span class="tooltiptext" id="pickaxe-tooltip">0.00% of cps<br>0 produced so far</span>
+                </div>
                 <button id="pickaxe-button"></button>
             </div>
 
             <div class="upgrade-item" id="farm-upgrade" style="display: none;">
                 <img id="farm-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl47c32-b5619189-c091-4640-b1fe-a978b1e8f094.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw0N2MzMi1iNTYxOTE4OS1jMDkxLTQ2NDAtYjFmZS1hOTc4YjFlOGYwOTQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.aXycWSU80CJ55SWPeUbE6cIVPTRmTfMnUnh3trqp2t4" alt="Farm">
-                <div class="label" id="farm-label"><strong>Shovel: 0</strong><span class="subtitle">+7/s</span></div>
+                <div class="label tooltip" id="farm-label"><strong>Shovel: 0</strong><span class="subtitle">+7/s</span>
+                    <span class="tooltiptext" id="farm-tooltip">0.00% of cps<br>0 produced so far</span>
+                </div>
                 <button id="farm-button"></button>
             </div>
 
             <div class="upgrade-item" id="mine-upgrade" style="display: none;">
                 <img id="mine-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl47f1q-200fbe33-0d51-4a78-80a6-9f7b0ae55263.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw0N2YxcS0yMDBmYmUzMy0wZDUxLTRhNzgtODBhNi05ZjdiMGFlNTUyNjMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.OtTs-tsRV4vGniwOTVZ5k3_3FHBe5xY7oHCEeYUM_zc" alt="Mine">
-                <div class="label" id="mine-label"><strong>Crystal: 0</strong><span class="subtitle">+54/s</span></div>
+                <div class="label tooltip" id="mine-label"><strong>Crystal: 0</strong><span class="subtitle">+54/s</span>
+                    <span class="tooltiptext" id="mine-tooltip">0.00% of cps<br>0 produced so far</span>
+                </div>
                 <button id="mine-button"></button>
             </div>
 
             <div class="upgrade-item" id="factory-upgrade" style="display: none;">
                 <img id="factory-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl47gyd-7f66d6a9-4550-49a9-82f0-24dbe94b0a5d.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw0N2d5ZC03ZjY2ZDZhOS00NTUwLTQ5YTktODJmMC0yNGRiZTk0YjBhNWQucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.8X86sdDf8OaFSeJ7PLO7LFAGpfHjzgc3YNbx4o-iLH4" alt="Factory">
-                <div class="label" id="factory-label"><strong>Factory: 0</strong><span class="subtitle">+280/s</span></div>
+                <div class="label tooltip" id="factory-label"><strong>Factory: 0</strong><span class="subtitle">+280/s</span>
+                    <span class="tooltiptext" id="factory-tooltip">0.00% of cps<br>0 produced so far</span>
+                </div>
                 <button id="factory-button"></button>
             </div>
 
             <div class="upgrade-item" id="bank-upgrade" style="display: none;">
                 <img id="bank-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl47hov-ebbc9e6d-2137-4648-864a-e16b4b2809fc.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw0N2hvdi1lYmJjOWU2ZC0yMTM3LTQ2NDgtODY0YS1lMTZiNGIyODA5ZmMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.CQ0iKFEXwvsbw7v719_4SFXc4u-kCuFlp4CgIUtyFtw" alt="Bank">
-                <div class="label" id="bank-label"><strong>Shield: 0</strong><span class="subtitle">+1.7k/s</span></div>
+                <div class="label tooltip" id="bank-label"><strong>Shield: 0</strong><span class="subtitle">+1.7k/s</span>
+                    <span class="tooltiptext" id="bank-tooltip">0.00% of cps<br>0 produced so far</span>
+                </div>
                 <button id="bank-button"></button>
             </div>
 
             <div class="upgrade-item" id="temple-upgrade" style="display: none;">
                 <img id="temple-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl5in5y-7c1d358e-086c-4bbf-97a6-d98fa4c3ca26.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw1aW41eS03YzFkMzU4ZS0wODZjLTRiYmYtOTdhNi1kOThmYTRjM2NhMjYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.3pe6bk3A5O3nw1ahjXYNPdL-nyyPGcgyhVWMloEeeFc" alt="Temple">
-                <div class="label" id="temple-label"><strong>Temple (0)</strong><span class="subtitle">+7,800 /sec</span></div>
+                <div class="label tooltip" id="temple-label"><strong>Temple (0)</strong><span class="subtitle">+7,800 /sec</span>
+                    <span class="tooltiptext" id="temple-tooltip">0.00% of cps<br>0 produced so far</span>
+                </div>
                 <button id="temple-button"></button>
             </div>
 
             <div class="upgrade-item" id="wizard-upgrade" style="display: none;">
                 <img id="wizard-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dl5isz8-c7a36a21-9587-44b8-b201-f14d943d04b2.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGw1aXN6OC1jN2EzNmEyMS05NTg3LTQ0YjgtYjIwMS1mMTRkOTQzZDA0YjIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.lhYyFE5zaT9OvBKt3S4AanZ9KGZFMPQK_PEYjO1hjGk" alt="Wizard Tower">
-                <div class="label" id="wizard-label"><strong>Gametower (0)</strong><span class="subtitle">+39,000 /sec</span></div>
+                <div class="label tooltip" id="wizard-label"><strong>Gametower (0)</strong><span class="subtitle">+39,000 /sec</span>
+                    <span class="tooltiptext" id="wizard-tooltip">0.00% of cps<br>0 produced so far</span>
+                </div>
                 <button id="wizard-button"></button>
             </div>
         </div>
@@ -109,7 +128,7 @@
         </div>
         <div class="changelog-container" id="changelog-container">
             <div class="changelog-title">Changelog</div>
-            <div class="changelog-row"><b>Game in beta (Dec 24, 2025)</b></div>
+            <div class="changelog-row"><b>Game in beta (Dec 24, 2025) - Ended</b></div>
             <div class="changelog-row">- Try out the game until Jan 7</div>
             <div class="changelog-row"><b>v0.0.1 (Dec 4, 2025)</b></div>
             <div class="changelog-row">- Beta is coming soon - Just implementing the UI and bug fixes</div>
@@ -117,7 +136,7 @@
             <div class="changelog-row">- New features coming soon!</div>
         </div>
         <div class="settings-container" id="settings-container">
-            <div class="settings-label">Settings</div>
+            <div class="settings-label">Options</div>
             <div class="settings-row">
                 <span class="settings-slider-label">Music</span>
                 <input type="range" min="0" max="100" value="100" class="settings-slider" id="music-volume">
@@ -144,12 +163,15 @@
         <div class="user-info" style="display: none;">
             <img src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png" alt="User Profile">
             <span id="username-display"></span>
+            <!-- Building Stats button (disabled for now as requested) -->
+            <button id="building-stats-btn" class="building-stats-btn" disabled aria-disabled="true" title="Coming soon">≡ Menu</button>
         </div>
     </div>
     <div class="username-container">
         <h2>Enter a username</h2>
         <input type="text" placeholder="Username">
-        <button id="continue-button">Play</button>
+        <!-- id changed to notify-btn so it can be used to trigger toast permission as part of click gesture -->
+        <button id="notify-btn">Start playing</button>
     </div>
 
     <script src="script.js" defer></script>
