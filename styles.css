@@ -5,22 +5,42 @@
     --primaryT: rgba(148,118,255,0.45);
 }
 
+/* Load local OTF font (gamefont.otf) and bold TTF (gamefont-bold.ttf) */
+@font-face {
+    font-family: 'Game Font';
+    src: url('neo1.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* New bold face for 'Game Font' */
+@font-face {
+    font-family: 'Game Font';
+    src: url('neo2.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(180deg, #95a6ff, #ffffff);
+    background: #a9c6e7;
     background-size: cover;
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    letter-spacing: 0.5px;
+    transition: all 0.38s ease-in-out;
 }
 
 /* Dark mode overrides added via .dark-mode on body */
 body.dark-mode {
-    background: linear-gradient(180deg, #3e456b, #120a0a);
+    background: #212830;
     color: white;
 }
 
@@ -30,7 +50,7 @@ body.dark-mode {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #343747;
+    background-color: #abb4e1;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -38,7 +58,8 @@ body.dark-mode {
     color: white;
     font-size: 30px;
     z-index: 1000;
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
+    color: black;
 }
 
 .loading-screen svg {
@@ -51,7 +72,7 @@ body.dark-mode {
 
 .loading-screen circle {
     fill: none;
-    stroke: #9ea8db;
+    stroke: #232535;
     stroke-width: 5;
     stroke-dasharray: 1, 200;
     stroke-dashoffset: 0;
@@ -85,7 +106,7 @@ body.dark-mode {
     position: absolute;
     bottom: 10px;
     left: 10px;
-    color: grey;
+    color: black;
     font-size: 20px;
 }
 
@@ -94,7 +115,7 @@ body.dark-mode {
     position: relative;
     width: 100%;
     height: 100%;
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
 }
 
 #cookie-count {
@@ -104,11 +125,9 @@ body.dark-mode {
     text-align: center;
     font-size: 30px;
     font-weight: bold;
-    background-color: transparent;
     padding: 10px;
     border-radius: 20px;
     transition: all 0.38s ease-in-out;
-    backdrop-filter: blur(7px);
     color: black;
     width: 400px;
 }
@@ -119,10 +138,8 @@ body.dark-mode {
     left: 228px;
     text-align: center;
     font-size: 16px;
-    background-color: transparent;
     padding: 10px;
     border-radius: 20px;
-    backdrop-filter: blur(7px);
     color: black;
     width: 300px;
     transition: all 0.38s ease-in-out;
@@ -148,25 +165,28 @@ body.dark-mode {
 
 .segmented-control {
     position: absolute;
-    top: 70px;
+    top: 92px;
     left: 800px;
     display: flex;
     background-color: #9ea8db;
     border-radius: 30px;
     overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    transition: all 0.38s ease-in-out;
 }
 
 .segmented-control button {
     padding: 10px 20px;
     font-size: 18px;
     cursor: pointer;
-    background-color: #9ea8db;
+    background-color: #abb4e1;
     color: black;
     border: none;
     border-radius: 0;
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     border-radius: 30px;
     margin: 4px;
+    transition: all 0.38s ease-in-out;
 }
 
 .segmented-control button.selected {
@@ -190,7 +210,7 @@ body.dark-mode {
     background-color: #ffffffc9;
     border-radius: 30px;
     padding: 16px;
-    max-height: 380px;
+    height: auto;
     overflow-y: auto;
     backdrop-filter: blur(7px);
     color: black;
@@ -235,8 +255,10 @@ body.dark-mode {
     border-radius: 6px;
     flex: 0 0 48px;
     object-fit: cover;
+    cursor: pointer; /* so hovering image feels interactive */
 }
 
+/* label will also host the tooltip wrapper (see .tooltip below) */
 .upgrade-item .label {
     display: flex;
     flex-direction: column;
@@ -256,12 +278,13 @@ body.dark-mode {
 }
 .upgrade-item .label .subtitle {
     font-size: 12px;
-    color: black; /* green-ish */
+    color: black;
     margin-top: 4px;
     line-height: 1;
     opacity: 0.95;
 }
 
+/* button styling kept consistent */
 .upgrade-item button {
     padding: 10px 18px;
     font-size: 16px;
@@ -270,21 +293,20 @@ body.dark-mode {
     color: black;
     border: none;
     border-radius: 30px; /* requested 30px rounded corners */
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     width: 160px; /* longer button width than before */
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: background-color 0.18s ease, transform 0.08s ease;
+    transition: 0.18s ease, transform 0.08s ease;
     flex: 0 0 auto;
     white-space: nowrap;
 }
 
 .upgrade-item button:hover {
     background-color: #daa8e6;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
 
 .upgrade-container button .inline-cookie {
@@ -292,10 +314,7 @@ body.dark-mode {
     margin-right: 6px; vertical-align: middle; object-fit: contain;
 }
 
-.upgrade-item button .cost {
-    font-weight: 700;
-}
-
+/* Clicker clone */
 .clicker-clone {
     position: absolute;
     pointer-events: none;
@@ -303,7 +322,7 @@ body.dark-mode {
     transition: opacity 0.5s, transform 0.2s;
     font-size: 18px;
     font-weight: normal;
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
 }
 
 .golden-cookie {
@@ -325,22 +344,85 @@ body.dark-mode {
     left: 0;
 }
 
+/* -----------------------------
+   NEW tooltip UI (replaces old one)
+   Uses .tooltip wrapper + .tooltiptext as requested
+   ----------------------------- */
+/* Keep label's layout (don't override display:flex) so layout & accessibility stay intact.
+   Only set position:relative and cursor. */
 .tooltip {
-    display: none;
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 5px;
-    border-radius: 10px;
-    font-size: 14px;
-    white-space: nowrap;
-    font-family: 'Cause', sans-serif;
+  position: relative;
+  /* do NOT set display here — .label uses display:flex and we must not override it */
+  border-bottom: 0; /* keep label readable */
+  cursor: default;
 }
 
-.cursor:hover .tooltip {
-    display: block;
+.tooltiptext {
+  visibility: hidden;
+  width: 240px;
+  background-color: #000000;
+  color: #ffffff;
+  text-align: left;
+  border-radius: 20px;
+  padding: 6px 8px;
+  position: absolute;
+  z-index: 1;
+  height: auto;
+  left: 0;
+  top: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: normal;
+  transition: visibility 0s linear .06s, opacity .12s ease;
+  opacity: 0;
 }
 
+/* show on hover/focus of the label (original behavior) */
+.tooltip:hover .tooltiptext,
+.tooltip:focus-within .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+/* show tooltip when hovering / focusing the building image as well (Buildings container only)
+   Use general sibling (~) and direct sibling (+) to be tolerant of small markup differences,
+   and scope the rule to .upgrade-container so it only affects images inside Buildings. */
+.upgrade-container .upgrade-item img:hover ~ .label .tooltiptext,
+.upgrade-container .upgrade-item img:focus ~ .label .tooltiptext,
+.upgrade-container .upgrade-item img:hover + .label .tooltiptext,
+.upgrade-container .upgrade-item img:focus + .label .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+/* show tooltip when script adds .tooltip-hover to the label (JS-assisted) */
+.tooltip-hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+/* small adjustments for dark mode */
+body.dark-mode .tooltiptext {
+  background-color: white;
+  color: black;
+}
+
+/* Keep tooltip text readable on small screens */
+@media (max-width: 480px) {
+  .tooltiptext { width: 260px; left: 0; }
+}
+
+.tooltiptext .small-muted {
+  color: #bdbdbd;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+/* Username and other containers */
 .username-container {
     display: none;
     position: absolute;
@@ -349,7 +431,7 @@ body.dark-mode {
     transform: translate(-50%, -50%);
     text-align: center;
     color: black;
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
 }
 
 .username-container h2 {
@@ -365,10 +447,11 @@ body.dark-mode {
     outline: none;
     text-align: center;
     color: black;
-    font-family:'Cause', sans-serif;
-    background-color: #ffffff54;
+    font-family:'Game Font', sans-serif;
+    background-color: white;
     backdrop-filter: blur(7px);
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    letter-spacing: 1px;
 }
 
 .username-container button {
@@ -381,9 +464,10 @@ body.dark-mode {
     color: #000000;
     margin-top: 20px;
     width: calc(78% - 40px);
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     backdrop-filter: blur(7px);
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    letter-spacing: 1px;
 }
 
 .username-container button:hover {
@@ -398,7 +482,7 @@ body.dark-mode {
     align-items: center;
     font-size: 18px;
     color: black;
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     transition: all 0.38s ease-in-out;
 }
 
@@ -407,6 +491,35 @@ body.dark-mode {
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
+}
+
+/* Building Stats button (placed next to username) */
+.user-info .building-stats-btn {
+    margin-left: 12px;
+    padding: 8px 14px;
+    font-size: 16px;
+    border-radius: 30px;
+    background-color: #abb4e1; /* same base color as .segmented-control buttons */
+    color: black;
+    border: none;
+    cursor: not-allowed;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    font-family: 'Game Font', sans-serif;
+    transition: opacity 0.18s ease;
+}
+
+.user-info .building-stats-btn:disabled {
+    opacity: 0.85;
+}
+
+/* Dark mode variant for the Building Stats button */
+body.dark-mode .user-info .building-stats-btn {
+    background-color: #15192b;
+    color: white;
+    cursor: not-allowed;
 }
 
 /* Stats Container Styles */
@@ -423,7 +536,7 @@ body.dark-mode {
     width: 350px;
     color: black;
     backdrop-filter: blur(7px);
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1)
 }
 .stats-container .stats-label {
@@ -452,7 +565,7 @@ body.dark-mode {
     width: 350px;
     color: black;
     backdrop-filter: blur(7px);
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     
 }
@@ -481,7 +594,7 @@ body.dark-mode {
     width: 350px;
     color: black;
     backdrop-filter: blur(7px);
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     transition: all 0.38s ease-in-out;
 }
@@ -532,12 +645,13 @@ body.dark-mode {
     border: 2px solid white;
 }
 .settings-value {
-    font-family: 'Cause', sans-serif;
+    font-family: 'Game Font', sans-serif;
     font-size: 17px;
     min-width: 38px;
     font-weight: regular;
     color: #333;
-    text-align: center
+    text-align: center;
+    transition: all 0.38s ease-in-out;
 }
 /* For Firefox */
 .settings-slider::-moz-range-track {
@@ -606,7 +720,7 @@ body.dark-mode .segmented-control {
 }
 
 body.dark-mode .segmented-control button {
-    background-color: transparent;
+    background-color: #232535;
     color: white;
 }
 
@@ -637,7 +751,7 @@ body.dark-mode .username-container button {
 }
 
 body.dark-mode .username-container input {
-    background-color: rgba(255,255,255,0.06);
+    background-color: black;
     color: white;
 }
 
@@ -652,29 +766,39 @@ body.dark-mode #sfx-volume-val {
     color: #ffffff !important;
 }
 
-/* Inline cookie image style (used to replace the 🍪 emoji) */
+/* Inline cookie image / emoji style (used to replace the 🍪 emoji)
+   - This rule was updated so emoji inside a <span class="inline-cookie"> align
+     consistently with the textual numbers (same baseline & vertical alignment).
+*/
 .inline-cookie {
-    width: 22px;
-    height: 22px;
+    display: inline-block;
     vertical-align: middle;
     margin-right: 8px;
-    display: inline-block;
-    object-fit: contain;
+    line-height: 1;
+    font-size: 1.15em; /* make emoji a little larger to match number size */
 }
 
 /* Slightly larger cookie in the main counter */
 #cookie-count .inline-cookie {
-    width: 28px;
-    height: 28px;
+    font-size: 1.25em;
     margin-right: 10px;
 }
 
-.upgrade-container button .inline-cookie { 
-    width: 18px; height: 18px;             
-    margin-right: 6px; vertical-align: middle; object-fit: contain; 
+/* Keep the small image sizing for img elements inside .inline-cookie usage
+   (explicit sizing for image-based inline-cookie usage inside upgrade buttons) */
+.upgrade-container button .inline-cookie img,
+.upgrade-item button .inline-cookie img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
 }
 
-body.dark-mode .inline-cookie { filter: none; }
+/* ensure span-based inline-cookie is not clipped in buttons */
+.upgrade-item button .inline-cookie {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* ------------------------------------------------------------------
    New switch styles (From Uiverse.io by nikk7007) scoped to .switch
@@ -696,6 +820,7 @@ body.dark-mode .inline-cookie { filter: none; }
   cursor: pointer;
   border: none;
   outline: none;
+  transition: all 0.38s ease-in-out;
 }
 
 .switch input[type=checkbox]::before {
