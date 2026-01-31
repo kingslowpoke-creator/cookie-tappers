@@ -1,5 +1,7 @@
 // Full script.js — game logic plus robust tooltip behavior (fixed-position bubble)
-// so hovering or focusing a building image always shows the tooltip.
+// Number animation updated to avoid downward animations and to prevent flashing/overwrites
+// by tracking the last displayed numeric value and always cancelling/settling animations
+// when a decrease occurs.
 
 document.addEventListener('DOMContentLoaded', function () {
     // ---------------------------
@@ -40,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function requestPermissionAndNotify(title, message) {
       if (!("Notification" in window)) {
-        console.warn("Notifications not supported");
+        console.warn("Notifications not supported.");
         // fallback: alert to ensure the user sees the message
         try { alert(title + "\n\n" + message); } catch (e) {}
         return;
@@ -99,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let cookieCount = 0;
     let totalCookies = 0;
     let cookiesPerClick = 1;
-    let upgradeCost = 15;
+    let upgradeCost = 12;
     let pickaxeCost = 100;
     let farmCost = 1100;
     let mineCost = 16000;
@@ -149,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let basicTapsItem = null;
     let basicTapsBtn = null;
 
-    const suffixes = ["k", "m", "b", "t", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Udc", "Ddc", "Tdc", "Qadc"];
+    const suffixes = ["k", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Udc", "Ddc", "Tdc", "Qadc"];
     const cookieEmoji = '🍪';
 
     // DOM refs
@@ -169,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const wizardButtonElement = document.getElementById('wizard-button');
     const clickSoundElement = document.getElementById('click-sound');
     const upgradeSoundElement = document.getElementById('upgrade-sound');
+    const upgradedSoundElement = document.getElementById('upgraded-sound');
     const userInfoElement = document.querySelector('.user-info');
     const usernameDisplayElement = document.getElementById('username-display');
     const notifyButton = document.getElementById('notify-btn');
@@ -186,12 +189,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalCookiesRow = document.getElementById('total-cookies-row');
     const clicksRow = document.getElementById('clicks-row');
     const totalBuildingsRow = document.getElementById('total-buildings-row');
+    // New stats rows for Audio & Appearance (not present in HTML by default but safe to query)
+    const musicStatRow = document.getElementById('music-stat-row');
+    const sfxStatRow = document.getElementById('sfx-stat-row');
+    const appearanceStatRow = document.getElementById('appearance-stat-row');
+
     const musicAudio = document.getElementById('music-audio');
-    const darkCheckbox = document.getElementById('dark-toggle');
+    // theme dropdown elements (replaced the old checkbox switch)
+    const themeDropdownRoot = document.getElementById('theme-dropdown');
+    const themeDropdownButton = document.getElementById('theme-button');
+    const themeDropdownMenu = document.getElementById('themeDropdown');
+
+    // number format dropdown elements
+    const numberFormatRoot = document.getElementById('numberformat-dropdown');
+    const numberFormatButton = document.getElementById('numberformat-button');
+    const numberFormatMenu = document.getElementById('numberformatDropdown');
+
     const musicVolumeSlider = document.getElementById('music-volume');
-    const musicVolumeVal = document.getElementById('music-volume-val');
+    // removed explicit numeric labels for sliders per request
     const sfxVolumeSlider = document.getElementById('sfx-volume');
-    const sfxVolumeVal = document.getElementById('sfx-volume-val');
 
     // ---------------------------
     // Audio / slider helpers
@@ -200,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setSfxVolume(val) {
         if (clickSoundElement) clickSoundElement.volume = val / 100;
         if (upgradeSoundElement) upgradeSoundElement.volume = val / 100;
+        if (upgradedSoundElement) upgradedSoundElement.volume = val / 100;
     }
 
     function updateSliderBackground(slider, fillColor = '#daa8e6', emptyColor = '#ededed') {
@@ -210,13 +227,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     musicVolumeSlider && musicVolumeSlider.addEventListener('input', (e) => {
         const value = parseInt(e.target.value, 10);
-        musicVolumeVal.textContent = value;
         setMusicVolume(value);
         updateSliderBackground(e.target);
     });
     sfxVolumeSlider && sfxVolumeSlider.addEventListener('input', (e) => {
         const value = parseInt(e.target.value, 10);
-        sfxVolumeVal.textContent = value;
         setSfxVolume(value);
         updateSliderBackground(e.target);
     });
@@ -229,35 +244,233 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.addEventListener('click', enableMusicIfAllowed);
 
     // ---------------------------
-    // Formatters
+    // Number formatting modes
     // ---------------------------
-    function formatNumber(number) {
+    // modes: "normal" (commas), "engineering" (k, M, B... with colored suffix), "emojis" (emoji suffixes)
+    let numberFormatMode = 'normal';
+    try { numberFormatMode = localStorage.getItem('cookieClicks_numberFormat') || 'normal'; } catch (e) {}
+
+    const emojiSuffixMap = {
+        k: '🥝',   // thousand
+        M: '⛏️',   // million
+        B: '🪙',   // billion
+        T: '🐢',   // trillion
+        Qa: '🔱',
+        Qi: '⚡',
+        Sx: '🔷',
+        Sp: '🌟',
+        Oc: '🪄',
+        No: '🎯',
+        Dc: '💎',
+        Udc: '🛡️',
+        Ddc: '🔥',
+        Tdc: '✨',
+        Qadc: '🚀'
+    };
+
+    // ---------------------------
+    // Formatters (updated to respect numberFormatMode)
+    // ---------------------------
+    function formatNumberEngineering(number) {
+        if (number >= 1000) {
+            const tier = Math.floor(Math.log10(number) / 3);
+            const exponent = tier * 3;
+            const scale = Math.pow(10, exponent);
+            const scaled = number / scale;
+            return `${scaled.toFixed(1)}e${exponent}`;
+        }
+        return Math.floor(number).toLocaleString();
+    }
+    function formatNumberEngineeringPlain(number) {
+        if (number >= 1000) {
+            const tier = Math.floor(Math.log10(number) / 3);
+            const exponent = tier * 3;
+            const scale = Math.pow(10, exponent);
+            const scaled = number / scale;
+            return `${scaled.toFixed(1)}e${exponent}`;
+        }
+        return Math.floor(number).toLocaleString();
+    }
+
+    function formatNumberEmojis(number) {
         if (number >= 1000) {
             const tier = Math.floor(Math.log10(number) / 3);
             const suffix = suffixes[tier - 1] || '';
             const scale = Math.pow(10, tier * 3);
             const scaled = number / scale;
-            return `${scaled.toFixed(2)}<span class="num-suffix">${suffix}</span>`;
+            const emoji = emojiSuffixMap[suffix] || suffix;
+            // keep span for styling if needed
+            return `${scaled.toFixed(1)}<span class="num-suffix">${emoji}</span>`;
         }
         return Math.floor(number).toLocaleString();
+    }
+    function formatNumberEmojisPlain(number) {
+        if (number >= 1000) {
+            const tier = Math.floor(Math.log10(number) / 3);
+            const suffix = suffixes[tier - 1] || '';
+            const scale = Math.pow(10, tier * 3);
+            const scaled = number / scale;
+            const emoji = emojiSuffixMap[suffix] || suffix;
+            return `${scaled.toFixed(1)}${emoji}`;
+        }
+        return Math.floor(number).toLocaleString();
+    }
+
+    function formatNumberNormal(number) {
+        if (number >= 1000) {
+            const tier = Math.floor(Math.log10(number) / 3);
+            const suffix = suffixes[tier - 1] || '';
+            const scale = Math.pow(10, tier * 3);
+            const scaled = number / scale;
+            return `${scaled.toFixed(1)}<span class="num-suffix">${suffix}</span>`;
+        }
+        return Math.floor(number).toLocaleString();
+    }
+
+    function formatNumberNormalPlain(number) {
+        if (number >= 1000) {
+            const tier = Math.floor(Math.log10(number) / 3);
+            const suffix = suffixes[tier - 1] || '';
+            const scale = Math.pow(10, tier * 3);
+            const scaled = number / scale;
+            return `${scaled.toFixed(1)}${suffix}`;
+        }
+        return Math.floor(number).toLocaleString();    
+    }
+
+    function formatNumber(number) {
+        // returns HTML-friendly string (may include span)
+        switch (numberFormatMode) {
+            case 'engineering': return formatNumberEngineering(number);
+            case 'emojis': return formatNumberEmojis(number);
+            default: return formatNumberNormal(number);
+        }
     }
     function formatNumberPlain(number) {
-        if (number >= 1000) {
-            const tier = Math.floor(Math.log10(number) / 3);
-            const suffix = suffixes[tier - 1] || '';
-            const scale = Math.pow(10, tier * 3);
-            const scaled = number / scale;
-            return `${scaled.toFixed(2)}${suffix}`;
+        // returns plain text string (no HTML)
+        switch (numberFormatMode) {
+            case 'engineering': return formatNumberEngineeringPlain(number);
+            case 'emojis': return formatNumberEmojisPlain(number);
+            default: return formatNumberNormalPlain(number);
         }
-        return Math.floor(number).toLocaleString();
     }
+
     function formatCookieValue(number) {
-        if (number >= 1000) return formatNumber(number);
-        if (Math.abs(number - Math.round(number)) > 0.0001) return number.toFixed(1);
-        return Math.round(number).toLocaleString();
+        // used for values where fractional display is important
+        if (numberFormatMode === 'engineering' || numberFormatMode === 'emojis' || numberFormatMode === 'normal' ) {
+            if (number >= 1000) return formatNumber(number);
+            if (Math.abs(number - Math.round(number)) > 0.0001) return number.toFixed(1);
+            return Math.round(number).toLocaleString();
+        } else {
+            if (Math.abs(number - Math.round(number)) > 0.0001) return number.toFixed(1);
+            return Math.round(number).toLocaleString();
+        }
     }
     function formatPerSecond(number) {
-        return formatCookieValue(number);
+        // keep same semantics but respect selected mode for large numbers
+        if (numberFormatMode === 'engineering' || numberFormatMode === 'emojis' || numberFormatMode === 'normal' ) {
+            // if >=1000, formatNumber returns HTML (which perSecondElement expects)
+            if (number >= 1000) return formatNumber(number);
+            if (Math.abs(number - Math.round(number)) > 0.0001) return number.toFixed(1);
+            return Math.round(number).toLocaleString();
+        } else {
+            if (Math.abs(number - Math.round(number)) > 0.0001) return number.toFixed(1);
+            return Math.round(number).toLocaleString();
+        }
+    }
+
+    // ---------------------------
+    // Number animation helpers (robust)
+    // ---------------------------
+    /**
+     * Animate a numeric value shown inside `el` from its current numeric value to `target`.
+     * - el: DOM element whose innerHTML will be updated using provided formatter (may include HTML).
+     * - target: numeric target value.
+     * - opts: { duration (ms), formatter (function number->string/HTML), allowDecrease (bool) }.
+     *
+     * Important behaviour to avoid flashing:
+     * - We keep a canonical last-displayed numeric value on el._displayedValue (integer).
+     * - If the new target is lower than the displayed value and allowDecrease is false, we
+     *   cancel any running animation and immediately set the displayed value (no downward tween).
+     * - While animating, we update el._displayedValue so any later immediate updates can cancel safely.
+     */
+    function animateNumber(el, target, opts = {}) {
+        if (!el) return;
+        const duration = (typeof opts.duration === 'number') ? opts.duration : 420;
+        const formatter = opts.formatter || (n => formatNumber(Math.floor(n)));
+        const allowDecrease = !!opts.allowDecrease;
+
+        // Normalize target to integer for the displayed counter logic
+        const targetNum = Math.floor(Number(target) || 0);
+
+        // Determine start: prefer el._displayedValue (the last number we drew),
+        // then dataset.value (legacy), then textContent fallback.
+        let start = 0;
+        if (typeof el._displayedValue === 'number') {
+            start = el._displayedValue;
+        } else if (el.dataset && el.dataset.value) {
+            start = Math.floor(Number(el.dataset.value) || 0);
+        } else {
+            // try to parse visible text as fallback (strip non-digit except dot and minus)
+            const parsed = parseFloat((el.textContent || '').replace(/[^0-9.\-]/g, '')) || 0;
+            start = Math.floor(parsed);
+        }
+
+        // If target is lower and we don't allow decrease, immediately set the displayed value.
+        if (targetNum < start && !allowDecrease) {
+            // cancel any ongoing animation
+            if (el._animFrame) {
+                cancelAnimationFrame(el._animFrame);
+                el._animFrame = null;
+            }
+            el._displayedValue = targetNum;
+            if (el.dataset) el.dataset.value = String(targetNum);
+            el.innerHTML = formatter(targetNum);
+            // subtle immediate highlight to show change (no tween)
+            el.classList.add('animating-number');
+            setTimeout(() => { el.classList.remove('animating-number'); }, 120);
+            return;
+        }
+
+        // If no change, still ensure dataset and displayed reflect the target
+        if (start === targetNum) {
+            el._displayedValue = targetNum;
+            if (el.dataset) el.dataset.value = String(targetNum);
+            el.innerHTML = formatter(targetNum);
+            return;
+        }
+
+        // cancel any existing animation
+        if (el._animFrame) {
+            cancelAnimationFrame(el._animFrame);
+            el._animFrame = null;
+        }
+
+        const startTime = performance.now();
+        el.classList.add('animating-number');
+
+        function easeOutQuad(t) { return t * (2 - t); }
+
+        function step(now) {
+            const t = Math.min(1, (now - startTime) / duration);
+            const eased = easeOutQuad(t);
+            const current = Math.floor(start + (targetNum - start) * eased);
+            // update tracked displayed value so future immediate changes can cancel safely
+            el._displayedValue = current;
+            if (el.dataset) el.dataset.value = String(current);
+            el.innerHTML = formatter(current);
+            if (t < 1) {
+                el._animFrame = requestAnimationFrame(step);
+            } else {
+                // finalize
+                el._displayedValue = targetNum;
+                if (el.dataset) el.dataset.value = String(targetNum);
+                el.innerHTML = formatter(targetNum);
+                el._animFrame = null;
+                setTimeout(() => { el.classList.remove('animating-number'); }, 80);
+            }
+        }
+        el._animFrame = requestAnimationFrame(step);
     }
 
     // ---------------------------
@@ -299,6 +512,11 @@ document.addEventListener('DOMContentLoaded', function () {
         ensureButtonStructure(bankButtonElement);
         ensureButtonStructure(templeButtonElement);
         ensureButtonStructure(wizardButtonElement);
+
+        // apply glowing-btn class to upgrade buttons so hover glow works
+        [upgradeButtonElement, pickaxeButtonElement, farmButtonElement, mineButtonElement, factoryButtonElement, bankButtonElement, templeButtonElement, wizardButtonElement].forEach(btn => {
+            if (btn && !btn.classList.contains('glowing-btn')) btn.classList.add('glowing-btn');
+        });
     }
 
     // ---------------------------
@@ -312,18 +530,23 @@ document.addEventListener('DOMContentLoaded', function () {
         item.className = 'upgrade-item';
 
         const img = document.createElement('img');
-        img.src = autotapImg ? autotapImg.src : '';
+        img.src = 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/af8bc113-d9a4-40cf-9077-06b673c583e0/dle3sdl-3d31edb0-df3c-43ef-99b2-03ca34fe3b07.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9hZjhiYzExMy1kOWE0LTQwY2YtOTA3Ny0wNmI2NzNjNTgzZTAvZGxlM3NkbC0zZDMxZWRiMC1kZjNjLTQzZWYtOTliMi0wM2NhMzRmZTNiMDcucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.22zoHl4d2kfFEa-CIQ9A9OFbeD06-EmPs8qUAMHfz4U';
         img.alt = 'Basic Taps';
 
+        // label is NOT a .tooltip anymore — remove custom floating tooltip and use native title instead.
         const label = document.createElement('div');
         label.className = 'label';
         const strong = document.createElement('strong');
         strong.innerText = 'Basic Taps';
         const subtitle = document.createElement('div');
         subtitle.className = 'subtitle';
-        subtitle.innerText = 'Clicks and Autotaps are worth 2x more';
+        // show same per-second subtitle as other buildings (user requested "+0.2/s")
+        subtitle.innerText = 'Clicks and autotaps are 2x more.';
         label.appendChild(strong);
         label.appendChild(subtitle);
+
+        // Use native title attribute for a simple tooltip (no floating overlay)
+        label.title = 'Taps and Autotaps are 2x upgraded.';
 
         const btn = document.createElement('button');
         btn.innerHTML = `<span class="inline-cookie">${cookieEmoji}</span><span class="cost">${formatNumber(Math.floor(basicTapsCost))}</span>`;
@@ -346,30 +569,36 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!upgradesListElement) return;
         upgradesListElement.innerHTML = '';
 
-        if (!basicTapsPurchased) {
+        // NEW: hide Basic Taps entirely until the player has at least 1 autotap
+        if (!basicTapsPurchased && ownedAutotaps >= 1) {
             const item = createBasicTapsItem();
             upgradesListElement.appendChild(item);
             if (basicTapsBtn) {
                 const costSpan = basicTapsBtn.querySelector('.cost');
                 if (costSpan) costSpan.innerHTML = formatNumber(Math.floor(basicTapsCost));
             }
-            if (ownedAutotaps < 1) {
-                basicTapsBtn.disabled = true;
-                basicTapsBtn.setAttribute('aria-disabled', 'true');
-                basicTapsBtn.style.opacity = '0.6';
-                basicTapsBtn.style.cursor = 'not-allowed';
-            } else {
-                basicTapsBtn.disabled = false;
-                basicTapsBtn.setAttribute('aria-disabled', 'false');
-                basicTapsBtn.style.opacity = '';
-                basicTapsBtn.style.cursor = '';
+            // enable/disable purchase based on current cookies
+            if (basicTapsBtn) {
+                if (cookieCount < basicTapsCost) {
+                    basicTapsBtn.disabled = true;
+                    basicTapsBtn.setAttribute('aria-disabled', 'true');
+                    basicTapsBtn.style.opacity = '0.6';
+                    basicTapsBtn.style.cursor = 'not-allowed';
+                } else {
+                    basicTapsBtn.disabled = false;
+                    basicTapsBtn.setAttribute('aria-disabled', 'false');
+                    basicTapsBtn.style.opacity = '';
+                    basicTapsBtn.style.cursor = '';
+                }
             }
+            // ensure tooltip wiring applies to items appended to the upgrades panel as well
+            wireTooltipsInBuildings();
             return;
         }
 
         const nothing = document.createElement('div');
         nothing.className = 'nothing';
-        nothing.textContent = `There's nothing here...`;
+        nothing.textContent = `There's nothing here`;
         upgradesListElement.appendChild(nothing);
     }
 
@@ -377,8 +606,27 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update display
     // ---------------------------
     function updateDisplay() {
-        if (cookieCountElement) cookieCountElement.innerHTML = `<span class="inline-cookie">${cookieEmoji}</span>${formatNumber(cookieCount)}`;
-        if (perSecondElement) perSecondElement.innerHTML = `cps: ${formatPerSecond(cookiesPerSecond)}`;
+        // Cookie count: we no longer animate the main cookie total — update immediately
+        if (cookieCountElement) {
+            // ensure container has inline cookie and numeric span
+            const existingNumber = cookieCountElement.querySelector('.cookie-number');
+            const targetCookies = Math.floor(cookieCount);
+            if (!existingNumber) {
+                cookieCountElement.innerHTML = `<span class="inline-cookie">${cookieEmoji}</span><span class="cookie-number" data-value="${targetCookies}">${formatNumber(targetCookies)}</span>`;
+                const el = cookieCountElement.querySelector('.cookie-number');
+                if (el) {
+                    el._displayedValue = targetCookies;
+                    if (el.dataset) el.dataset.value = String(targetCookies);
+                }
+            } else {
+                // Immediate update (no animation) for main cookie counter
+                existingNumber._displayedValue = targetCookies;
+                if (existingNumber.dataset) existingNumber.dataset.value = String(targetCookies);
+                existingNumber.innerHTML = formatNumber(targetCookies);
+            }
+        }
+
+        if (perSecondElement) perSecondElement.innerHTML = `${formatPerSecond(cookiesPerSecond)} per second`;
 
         const labels = [
             { id: 'autotap-label', text: `Autotap: ${ownedAutotaps}`, cps: autotapCps, owned: ownedAutotaps, produced: producedAutotaps, tooltipId: 'autotap-tooltip' },
@@ -394,12 +642,28 @@ document.addEventListener('DOMContentLoaded', function () {
             const el = document.getElementById(l.id);
             if (el) {
                 const formattedCps = formatPerSecond(l.cps);
-                el.innerHTML = `<strong>${l.text}</strong><span class="subtitle">+${formattedCps}/s</span><span class="tooltiptext" id="${l.tooltipId}">0.00% of cps<br>0 produced so far</span>`;
+                // Build tooltip with dedicated spans for produced values so we can animate them
+                const itemTotalCps = l.owned * l.cps;
+                const percent = (cookiesPerSecond > 0) ? ((itemTotalCps / cookiesPerSecond) * 100).toFixed(1) : '0.0';
+                // produced value (total produced so far) and producing (instant cps contribution)
+                const producedVal = Math.floor(l.produced);
+                const producingVal = Math.floor(itemTotalCps);
+
+                el.innerHTML = `<strong>${l.text}</strong><span class="subtitle">+${formattedCps}/s</span><span class="tooltiptext" id="${l.tooltipId}">${percent}% of cps<br>🍪<span class="produced-number" data-value="${producedVal}">${formatNumber(producedVal)}</span> produced<br>Producing <span class="producing-number" data-value="${producingVal}">${formatCookieValue(producingVal)}</span>🍪/s</span>`;
+
                 const tooltipEl = document.getElementById(l.tooltipId);
                 if (tooltipEl) {
-                    const itemTotalCps = l.owned * l.cps;
-                    const percent = (cookiesPerSecond > 0) ? ((itemTotalCps / cookiesPerSecond) * 100).toFixed(1) : '0.0';
-                    tooltipEl.innerHTML = `${percent}% of cps<br>🍪${formatNumber(Math.floor(l.produced))} produced`;
+                    // animate produced number and producing number spans
+                    const prodSpan = tooltipEl.querySelector('.produced-number');
+                    const prodCpsSpan = tooltipEl.querySelector('.producing-number');
+                    if (prodSpan) {
+                        // produced counters always increase (so allowDecrease=false is fine)
+                        animateNumber(prodSpan, producedVal, { duration: 700, formatter: (n) => formatNumber(Math.floor(n)), allowDecrease: false });
+                    }
+                    if (prodCpsSpan) {
+                        // producing may change up or down; we prefer not to animate downward to avoid visual confusion
+                        animateNumber(prodCpsSpan, producingVal, { duration: 700, formatter: (n) => formatCookieValue(Math.floor(n)), allowDecrease: false });
+                    }
                 }
             }
         });
@@ -428,6 +692,20 @@ document.addEventListener('DOMContentLoaded', function () {
         if (totalCookiesRow) totalCookiesRow.innerHTML = `${cookieEmoji} ${formatNumber(Math.floor(totalCookies))}`;
         if (clicksRow) clicksRow.innerHTML = `👆 ${formatNumber(Math.floor(clickCount))}`;
         if (totalBuildingsRow) totalBuildingsRow.innerHTML = ` 🏗️ ${formatNumber(Math.floor(computeTotalBuildings()))}`;
+
+        // Update the new Audio & Appearance rows
+        if (musicStatRow) {
+            const mv = musicVolumeSlider ? musicVolumeSlider.value : '100';
+            musicStatRow.innerHTML = `Music: ${mv}`;
+        }
+        if (sfxStatRow) {
+            const sv = sfxVolumeSlider ? sfxVolumeSlider.value : '100';
+            sfxStatRow.innerHTML = `SFX: ${sv}`;
+        }
+        if (appearanceStatRow) {
+            const appearance = (document.body.classList.contains('dark-mode')) ? 'Dark' : 'Light';
+            appearanceStatRow.innerHTML = appearance;
+        }
 
         updateUpgradesPanel();
 
@@ -478,7 +756,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---------------------------
     function startInterval() {
         if (intervalId) clearInterval(intervalId);
-        const perTick = 1 / 10;
+        const perTick = 1;
         intervalId = setInterval(() => {
             computeCookiesPerSecond();
 
@@ -493,17 +771,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const totalTick = autoContrib + pickContrib + farmContrib + mineContrib + factoryContrib + bankContrib + templeContrib + wizardContrib;
 
-            cookieCount += totalTick;
-            totalCookies += totalTick;
+            cookieCount += totalTick / 10;
+            totalCookies += totalTick / 10;
 
-            producedAutotaps += autoContrib;
-            producedPickaxes += pickContrib;
-            producedFarms += farmContrib;
-            producedMines += mineContrib;
-            producedFactories += factoryContrib;
-            producedBanks += bankContrib;
-            producedTemples += templeContrib;
-            producedWizards += wizardContrib;
+            producedAutotaps += autoContrib / 10;
+            producedPickaxes += pickContrib / 10;
+            producedFarms += farmContrib / 10;
+            producedMines += mineContrib / 10;
+            producedFactories += factoryContrib / 10;
+            producedBanks += bankContrib / 10;
+            producedTemples += templeContrib / 10;
+            producedWizards += wizardContrib / 10;
 
             updateDisplay();
             checkUpgrades();
@@ -650,9 +928,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cookieCount >= upgradeCost) {
             cookieCount -= upgradeCost;
             ownedAutotaps++;
-            upgradeCost = Math.round(upgradeCost * 1.12);
+            upgradeCost = Math.round(upgradeCost * 1.1);
             computeCookiesPerSecond();
-            updateDisplay();
+            updateDisplay(); // immediate update; main counter no longer animates
             startInterval();
             playSfx(upgradeSoundElement);
         }
@@ -662,7 +940,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cookieCount >= pickaxeCost) {
             cookieCount -= pickaxeCost;
             ownedPickaxes++;
-            pickaxeCost = Math.round(pickaxeCost * 1.12);
+            pickaxeCost = Math.round(pickaxeCost * 1.1);
             computeCookiesPerSecond();
             updateDisplay();
             startInterval();
@@ -674,7 +952,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cookieCount >= farmCost) {
             cookieCount -= farmCost;
             ownedFarms++;
-            farmCost = Math.round(farmCost * 1.12);
+            farmCost = Math.round(farmCost * 1.1);
             computeCookiesPerSecond();
             updateDisplay();
             startInterval();
@@ -686,7 +964,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cookieCount >= mineCost) {
             cookieCount -= mineCost;
             ownedMines++;
-            mineCost = Math.round(mineCost * 1.12);
+            mineCost = Math.round(mineCost * 1.1);
             computeCookiesPerSecond();
             updateDisplay();
             startInterval();
@@ -698,7 +976,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cookieCount >= factoryCost) {
             cookieCount -= factoryCost;
             ownedFactories++;
-            factoryCost = Math.round(factoryCost * 1.12);
+            factoryCost = Math.round(factoryCost * 1.1);
             computeCookiesPerSecond();
             updateDisplay();
             startInterval();
@@ -710,7 +988,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cookieCount >= bankCost) {
             cookieCount -= bankCost;
             ownedBanks++;
-            bankCost = Math.round(bankCost * 1.12);
+            bankCost = Math.round(bankCost * 1.1);
             computeCookiesPerSecond();
             updateDisplay();
             startInterval();
@@ -722,7 +1000,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cookieCount >= templeCost) {
             cookieCount -= templeCost;
             ownedTemples++;
-            templeCost = Math.round(templeCost * 1.12);
+            templeCost = Math.round(templeCost * 1.1);
             computeCookiesPerSecond();
             updateDisplay();
             startInterval();
@@ -734,7 +1012,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cookieCount >= wizardCost) {
             cookieCount -= wizardCost;
             ownedWizards++;
-            wizardCost = Math.round(wizardCost * 1.12);
+            wizardCost = Math.round(wizardCost * 1.1);
             computeCookiesPerSecond();
             updateDisplay();
             startInterval();
@@ -761,17 +1039,21 @@ document.addEventListener('DOMContentLoaded', function () {
         computeCookiesPerSecond();
         updateDisplay();
         updateUpgradesPanel();
-        playSfx(upgradeSoundElement);
+        playSfx(upgradedSoundElement);
     }
 
     // ---------------------------
-    // UI: dark mode, tabs, username flow (Notification API used for "Welcome")
+    // UI: dark mode (now via dropdown), tabs, username flow (Notification API used for "Welcome")
     // ---------------------------
     function setDarkMode(enabled) {
         if (enabled) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode');
+
+        // update dropdown label & aria attributes
+        if (themeDropdownButton) {
+            themeDropdownButton.textContent = `${enabled ? 'Dark🔻' : 'Light🔻'}`;
+            themeDropdownButton.setAttribute('aria-expanded', 'false');
+        }
         try {
-            if (darkCheckbox) darkCheckbox.checked = enabled;
-            if (darkCheckbox) darkCheckbox.setAttribute('aria-checked', enabled ? 'true' : 'false');
             localStorage.setItem('cookieClicks_darkMode', enabled ? '1' : '0');
         } catch (e) {}
     }
@@ -779,11 +1061,155 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const val = localStorage.getItem('cookieClicks_darkMode');
             const enabled = val === '1';
-            if (darkCheckbox) darkCheckbox.checked = enabled;
             setDarkMode(enabled);
         } catch (e) {}
     })();
-    darkCheckbox && darkCheckbox.addEventListener('change', (e) => setDarkMode(e.target.checked));
+
+    // Theme dropdown interactions (replace the old checkbox)
+    if (themeDropdownRoot && themeDropdownButton && themeDropdownMenu) {
+        // toggle menu
+        themeDropdownButton.addEventListener('click', (e) => {
+            const open = themeDropdownRoot.classList.toggle('open');
+            themeDropdownButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+            themeDropdownMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+        });
+
+        // handle option selection (buttons inside menu)
+        themeDropdownMenu.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-theme]');
+            if (!btn) return;
+            const theme = btn.getAttribute('data-theme');
+            if (theme === 'dark') {
+                setDarkMode(true);
+            } else {
+                setDarkMode(false);
+            }
+            // close menu
+            themeDropdownRoot.classList.remove('open');
+            themeDropdownButton.setAttribute('aria-expanded', 'false');
+            themeDropdownMenu.setAttribute('aria-hidden', 'true');
+            updateDisplay();
+        });
+
+        // keyboard accessibility
+        themeDropdownButton.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                themeDropdownRoot.classList.add('open');
+                themeDropdownMenu.setAttribute('aria-hidden', 'false');
+                themeDropdownButton.setAttribute('aria-expanded', 'true');
+                const first = themeDropdownMenu.querySelector('[data-theme]');
+                if (first) first.focus();
+            }
+        });
+
+        themeDropdownMenu.addEventListener('keydown', (e) => {
+            const items = Array.from(themeDropdownMenu.querySelectorAll('[data-theme]'));
+            const idx = items.indexOf(document.activeElement);
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = items[(idx + 1) % items.length];
+                if (next) next.focus();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = items[(idx - 1 + items.length) % items.length];
+                if (prev) prev.focus();
+            } else if (e.key === 'Escape') {
+                themeDropdownRoot.classList.remove('open');
+                themeDropdownButton.focus();
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.activeElement.click();
+            }
+        });
+
+        // close when clicking outside
+        document.addEventListener('click', (ev) => {
+            if (!ev.target.closest || (!ev.target.closest('.dropdown'))) {
+                themeDropdownRoot.classList.remove('open');
+                themeDropdownButton.setAttribute('aria-expanded', 'false');
+                themeDropdownMenu.setAttribute('aria-hidden', 'true');
+            }
+        });
+    }
+
+    // ---------------------------
+    // Number format dropdown interactions
+    // ---------------------------
+    (function initNumberFormatDropdown() {
+        // initialize label on button
+        if (numberFormatButton) {
+            const label = numberFormatMode === 'engineering' ? 'Engineering🔻' : (numberFormatMode === 'emojis' ? 'Emojis🔻' : 'Normal🔻');
+            numberFormatButton.textContent = `${label}`;
+        }
+
+        if (!numberFormatRoot || !numberFormatButton || !numberFormatMenu) return;
+
+        numberFormatButton.addEventListener('click', (e) => {
+            const open = numberFormatRoot.classList.toggle('open');
+            numberFormatButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+            numberFormatMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+        });
+
+        numberFormatMenu.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-format]');
+            if (!btn) return;
+            const fmt = btn.getAttribute('data-format');
+            if (!fmt) return;
+            numberFormatMode = fmt;
+            try { localStorage.setItem('cookieClicks_numberFormat', numberFormatMode); } catch (err) {}
+            numberFormatButton.textContent = (fmt === 'engineering') ? 'Engineering🔻' : (fmt === 'emojis' ? 'Emojis🔻' : 'Normal🔻');
+
+            // close menu
+            numberFormatRoot.classList.remove('open');
+            numberFormatButton.setAttribute('aria-expanded', 'false');
+            numberFormatMenu.setAttribute('aria-hidden', 'true');
+
+            // refresh UI with new format
+            updateDisplay();
+        });
+
+        // keyboard accessibility
+        numberFormatButton.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                numberFormatRoot.classList.add('open');
+                numberFormatMenu.setAttribute('aria-hidden', 'false');
+                numberFormatButton.setAttribute('aria-expanded', 'true');
+                const first = numberFormatMenu.querySelector('[data-format]');
+                if (first) first.focus();
+            }
+        });
+
+        numberFormatMenu.addEventListener('keydown', (e) => {
+            const items = Array.from(numberFormatMenu.querySelectorAll('[data-format]'));
+            const idx = items.indexOf(document.activeElement);
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = items[(idx + 1) % items.length];
+                if (next) next.focus();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prev = items[(idx - 1 + items.length) % items.length];
+                if (prev) prev.focus();
+            } else if (e.key === 'Escape') {
+                numberFormatRoot.classList.remove('open');
+                numberFormatButton.focus();
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.activeElement.click();
+            }
+        });
+
+        // close when clicking outside (separate handler to avoid interfering with theme dropdown)
+        document.addEventListener('click', (ev) => {
+            if (!ev.target.closest || (!ev.target.closest('.dropdown'))) {
+                numberFormatRoot.classList.remove('open');
+                numberFormatButton.setAttribute('aria-expanded', 'false');
+                numberFormatMenu.setAttribute('aria-hidden', 'true');
+            }
+        });
+    })();
 
     function clearSelectedTabs() {
         [buildingsButton, upgradesButton, statsButton, changelogButton, settingsButton].forEach(btn => {
@@ -837,6 +1263,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 2000);
 
     const usernameInput = document.querySelector('.username-container input');
+
+    // Floating label behavior: toggle .has-value on wrapper
+    (function wireFloatingLabel() {
+        const wrapper = document.querySelector('.username-container .input-wrapper');
+        if (!usernameInput || !wrapper) return;
+        const update = () => {
+            if (usernameInput.value && usernameInput.value.trim() !== '') wrapper.classList.add('has-value');
+            else wrapper.classList.remove('has-value');
+        };
+        usernameInput.addEventListener('input', update);
+        usernameInput.addEventListener('blur', update);
+        usernameInput.addEventListener('focus', () => wrapper.classList.add('has-value'));
+        // initialize
+        update();
+    })();
 
     async function enterGame(usernameRaw) {
         let username = (usernameRaw || '').trim();
@@ -906,7 +1347,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const tw = tooltipEl.offsetWidth;
         const th = tooltipEl.offsetHeight;
 
-        const img = wrapper.querySelector('img');
+        // Find the related image: first try to find an img inside wrapper; otherwise, find an img within the same .upgrade-item
+        let img = wrapper.querySelector('img');
+        if (!img) {
+            const parent = wrapper.closest('.upgrade-item');
+            img = parent ? parent.querySelector('img') : null;
+        }
         const anchorRect = img ? img.getBoundingClientRect() : wrapper.getBoundingClientRect();
 
         // compute left (centered)
@@ -946,48 +1392,60 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function wireTooltipsInBuildings() {
-        if (!upgradeContainer) return;
-        const wrappers = upgradeContainer.querySelectorAll('.tooltip');
-        wrappers.forEach(w => {
-            const img = w.querySelector('img');
-            if (!img) return;
+        // Wire tooltips within both the main upgrade container and the upgrades list (basic taps lives in upgrades-container)
+        const containers = [];
+        if (upgradeContainer) containers.push(upgradeContainer);
+        if (upgradesContainer) containers.push(upgradesContainer);
 
-            // Ensure keyboard accessibility
-            if (!img.hasAttribute('tabindex')) img.setAttribute('tabindex', '0');
-
-            // Remove previous handlers if present
-            img.removeEventListener('mouseenter', w._enterHandler || (()=>{}));
-            img.removeEventListener('mouseleave', w._leaveHandler || (()=>{}));
-            img.removeEventListener('focus', w._focusHandler || (()=>{}));
-            img.removeEventListener('blur', w._blurHandler || (()=>{}));
-            img.removeEventListener('touchstart', w._touchHandler || (()=>{}));
-
-            const open = () => {
-                document.querySelectorAll('.tooltip').forEach(other => {
-                    if (other !== w) hideTooltipForWrapper(other);
-                });
-                showTooltipForWrapper(w);
-            };
-            const close = () => hideTooltipForWrapper(w);
-
-            w._enterHandler = open;
-            w._leaveHandler = close;
-            w._focusHandler = open;
-            w._blurHandler = close;
-            w._touchHandler = function (ev) {
-                if (!w._touchedOpen) {
-                    ev.preventDefault();
-                    open();
-                    w._touchedOpen = true;
-                    setTimeout(() => { w._touchedOpen = false; }, 1200);
+        containers.forEach((containerEl) => {
+            const wrappers = containerEl.querySelectorAll('.tooltip');
+            wrappers.forEach(w => {
+                // find associated img: either inside wrapper or within same upgrade-item
+                let img = w.querySelector('img');
+                if (!img) {
+                    const parent = w.closest('.upgrade-item');
+                    img = parent ? parent.querySelector('img') : null;
                 }
-            };
+                if (!img) return;
 
-            img.addEventListener('mouseenter', w._enterHandler);
-            img.addEventListener('mouseleave', w._leaveHandler);
-            img.addEventListener('focus', w._focusHandler);
-            img.addEventListener('blur', w._blurHandler);
-            img.addEventListener('touchstart', w._touchHandler, { passive: false });
+                // Ensure keyboard accessibility
+                if (!img.hasAttribute('tabindex')) img.setAttribute('tabindex', '0');
+
+                // Remove previous handlers if present
+                img.removeEventListener('mouseenter', w._enterHandler || (()=>{}));
+                img.removeEventListener('mouseleave', w._leaveHandler || (()=>{}));
+                img.removeEventListener('focus', w._focusHandler || (()=>{}));
+                img.removeEventListener('blur', w._blurHandler || (()=>{}));
+                img.removeEventListener('touchstart', w._touchHandler || (()=>{}));
+
+                const open = () => {
+                    // hide other tooltips across both containers to prevent overlaps/loops
+                    document.querySelectorAll('.tooltip').forEach(other => {
+                        if (other !== w) hideTooltipForWrapper(other);
+                    });
+                    showTooltipForWrapper(w);
+                };
+                const close = () => hideTooltipForWrapper(w);
+
+                w._enterHandler = open;
+                w._leaveHandler = close;
+                w._focusHandler = open;
+                w._blurHandler = close;
+                w._touchHandler = function (ev) {
+                    if (!w._touchedOpen) {
+                        ev.preventDefault();
+                        open();
+                        w._touchedOpen = true;
+                        setTimeout(() => { w._touchedOpen = false; }, 1200);
+                    }
+                };
+
+                img.addEventListener('mouseenter', w._enterHandler);
+                img.addEventListener('mouseleave', w._leaveHandler);
+                img.addEventListener('focus', w._focusHandler);
+                img.addEventListener('blur', w._blurHandler);
+                img.addEventListener('touchstart', w._touchHandler, { passive: false });
+            });
         });
 
         // Close tooltips when clicking outside
@@ -1007,7 +1465,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Start interval & title updater
     // ---------------------------
     startInterval();
-    setInterval(() => { document.title = `${formatNumberPlain(Math.floor(cookieCount))} cookies`; }, 1000);
+    setInterval(() => { document.title = `Cookie Tappers: ${formatNumberPlain(Math.floor(cookieCount))}🍪`; }, 1000);
 
     if (musicVolumeSlider) { setMusicVolume(musicVolumeSlider.value); updateSliderBackground(musicVolumeSlider); }
     if (sfxVolumeSlider) { setSfxVolume(sfxVolumeSlider.value); updateSliderBackground(sfxVolumeSlider); }
@@ -1022,6 +1480,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showTooltipForWrapper,
         hideTooltipForWrapper,
         createNotification,
-        requestPermissionAndNotify
+        requestPermissionAndNotify,
+        animateNumber
     };
 });
