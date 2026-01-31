@@ -8,16 +8,28 @@
 /* Load local OTF font (gamefont.otf) and bold TTF (gamefont-bold.ttf) */
 @font-face {
     font-family: 'Game Font';
-    src: url('neo1.otf') format('opentype');
+    src: url('1.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
+h1 {
+    display: block;
+    font-size: 0.95em;
+    margin-block-start: -0.33em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: 400;
+    unicode-bidi: isolate;
+    color: grey;
+}
+
 /* New bold face for 'Game Font' */
 @font-face {
     font-family: 'Game Font';
-    src: url('neo2.otf') format('opentype');
+    src: url('2.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -27,7 +39,7 @@ body {
     font-family: 'Game Font', sans-serif;
     margin: 0;
     padding: 0;
-    background: #a9c6e7;
+    background: #848cc6;
     background-size: cover;
     color: white;
     display: flex;
@@ -40,7 +52,7 @@ body {
 
 /* Dark mode overrides added via .dark-mode on body */
 body.dark-mode {
-    background: #212830;
+    background: #232535;
     color: white;
 }
 
@@ -118,20 +130,29 @@ body.dark-mode {
     font-family: 'Game Font', sans-serif;
 }
 
+/* Cookie counter: show emoji & number as an aligned inline-flex group so the cookie
+   icon always vertically centers with the number regardless of font/emoji metrics. */
 #cookie-count {
     position: absolute;
     top: 20px;
-    left: 177.5px;
+    left: 169px;
     text-align: center;
     font-size: 30px;
     font-weight: bold;
-    padding: 10px;
+    padding: 10px 16px;
     border-radius: 20px;
     transition: all 0.38s ease-in-out;
     color: black;
     width: 400px;
+
+    /* alignment fix: use inline-flex to keep emoji & number aligned */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
+/* per-second unchanged layout but ensure it's readable */
 #per-second {
     position: absolute;
     top: 90px;
@@ -168,7 +189,7 @@ body.dark-mode {
     top: 92px;
     left: 800px;
     display: flex;
-    background-color: #9ea8db;
+    background-color: #ffffff;
     border-radius: 30px;
     overflow: hidden;
     box-shadow: 0 2px 15px rgba(0,0,0,0.08);
@@ -190,7 +211,7 @@ body.dark-mode {
 }
 
 .segmented-control button.selected {
-    background-color: white;
+    background-color: #d9dced;
     color: black;
     border-radius: 30px;
 }
@@ -214,9 +235,10 @@ body.dark-mode {
     overflow-y: auto;
     backdrop-filter: blur(7px);
     color: black;
-    width: 390px;
+    width: 400px;
     box-shadow: 0 2px 15px rgba(0,0,0,0.08);
     gap: 10px;
+    max-height: 380px;
 }
 
 .upgrade-container::-webkit-scrollbar {
@@ -241,11 +263,12 @@ body.dark-mode {
     align-items: center;
     justify-content: space-between;
     background-color: #ffffff; /* light mode: white inner background */
-    padding: 10px 12px;
+    padding: 15px 12px;
     border-radius: 20px;
     width: 100%;
     box-sizing: border-box;
-    gap: 12px
+    gap: 12px;
+    width: 390px;
 }
 
 .upgrade-item img {
@@ -299,16 +322,39 @@ body.dark-mode {
     justify-content: center;
     width: 160px; /* longer button width than before */
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: 0.18s ease, transform 0.08s ease;
     flex: 0 0 auto;
     white-space: nowrap;
 }
 
-.upgrade-item button:hover {
-    background-color: #daa8e6;
-    transform: translateY(-2px);
+/* Apply the glowing-btn style (overrides and/or complements .upgrade-item button) */
+.glowing-btn {
+  /* Basic button styling */
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  color: #fff;
+  background-color: #4a00e0; /* Button background color (e.g., purple) */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none; /* Remove default outline */
+  
+  /* Initial glow effect (subtle or none) */
+  box-shadow: 0 0 5px rgba(74, 0, 224, 0.5);
+
+  /* Smooth transition for the glow effect */
+  transition: box-shadow 0.3s ease-in-out, background-color 0.2s ease;
 }
 
+/* Intense glow on hover */
+.glowing-btn:hover {
+  box-shadow: 
+    0 0 10px #9ea8db,
+    0 0 10px #4a00e0,
+    0 0 20px #4a00e0,
+    0 0 30px #4a00e0;
+}
+
+/* ensure upgrade-item button specifics remain (size/inline-cookie) */
 .upgrade-container button .inline-cookie {
     width: 18px; height: 18px;
     margin-right: 6px; vertical-align: middle; object-fit: contain;
@@ -357,7 +403,9 @@ body.dark-mode {
   cursor: default;
 }
 
+/* Base tooltip box */
 .tooltiptext {
+  pointer-events: none;  
   visibility: hidden;
   width: 240px;
   background-color: #000000;
@@ -369,13 +417,33 @@ body.dark-mode {
   z-index: 1;
   height: auto;
   left: 0;
-  top: 15px;
+  top: 3px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.4);
   font-size: 13px;
   line-height: 1.2;
   white-space: normal;
   transition: visibility 0s linear .06s, opacity .12s ease;
   opacity: 0;
+  top: -50px;
+
+  /* IMPORTANT: prevent the tooltip from capturing pointer events so a tooltip won't
+     block the pointer and cause mouseleave/mouseenter loops (fixes flashing). */
+  pointer-events: none;
+  will-change: opacity, transform, left, top;
+}
+
+/* When JS positions tooltips as fixed on the page (so they don't cause hover loops),
+   ensure the tooltip uses fixed positioning so it's removed from the wrapper's flow. */
+.tooltiptext.fixed-position {
+  position: fixed;
+  /* keep pointer-events disabled unless explicitly made interactive */
+  pointer-events: none;
+}
+
+/* If in the future you need interactive content inside a tooltip, add .tooltiptext.interactive
+   (JS can toggle that) to allow pointer events. */
+.tooltiptext.interactive {
+  pointer-events: auto;
 }
 
 /* show on hover/focus of the label (original behavior) */
@@ -434,24 +502,78 @@ body.dark-mode .tooltiptext {
     font-family: 'Game Font', sans-serif;
 }
 
-.username-container h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
+/* Input wrapper for floating label */
+.username-container .input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: calc(78% - 40px);
+    text-align: left;
+    left: -19px;
 }
 
+/* Slightly taller padding to make room for label */
 .username-container input {
-    padding: 10px 20px;
+    padding: 18px 20px 16px 20px;
     font-size: 18px;
     border-radius: 30px;
     border: none;
     outline: none;
-    text-align: center;
+    text-align: left;
     color: black;
     font-family:'Game Font', sans-serif;
     background-color: white;
     backdrop-filter: blur(7px);
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     letter-spacing: 1px;
+    transition: box-shadow .18s ease;
+    position: relative;
+    left: -17px
+}
+
+/* Floating label */
+.username-container .floating-label {
+    position: absolute;
+    left: 0px;
+    top: 18px;
+    font-size: 16px;
+    color: #8a8a8a;
+    pointer-events: none;
+    transition: transform .18s ease, font-size .18s ease, color .18s ease;
+    background: transparent;
+    padding: 0 6px;
+    border-radius: 12px;
+}
+
+/* When the input has focus or the wrapper has a value, float label up */
+.username-container .input-wrapper.has-value .floating-label,
+.username-container .input-wrapper input:focus + .floating-label {
+    transform: translateY(-135%);
+    font-size: 13px;
+    color: #333;
+    top: 25px;
+}
+
+/* Focused input shadow */
+.username-container input:focus {
+    box-shadow: 0 6px 18px rgba(158,168,219,0.18);
+}
+
+.username-container h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.username-container .username-note {
+    font-size: 15px;
+    margin-top: 6px;
+    color: black;
+    left: 0px;
+    position: relative;
+}
+
+/* In dark mode we show the note as black (per request) */
+body.dark-mode .username-container .username-note {
+    color: white;
 }
 
 .username-container button {
@@ -461,13 +583,15 @@ body.dark-mode .tooltiptext {
     border: none;
     cursor: pointer;
     background-color: #9ea8db;
-    color: #000000;
+    color: white;
     margin-top: 20px;
     width: calc(78% - 40px);
     font-family: 'Game Font', sans-serif;
     backdrop-filter: blur(7px);
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     letter-spacing: 1px;
+    right: -3px;
+    position: relative;
 }
 
 .username-container button:hover {
@@ -480,17 +604,21 @@ body.dark-mode .tooltiptext {
     right: 20px;
     display: flex;
     align-items: center;
-    font-size: 18px;
+    font-size: 16px;
     color: black;
     font-family: 'Game Font', sans-serif;
     transition: all 0.38s ease-in-out;
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .user-info img {
-    width: 40px;
-    height: 40px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
     margin-right: 10px;
+    background-color: white;
 }
 
 /* Building Stats button (placed next to username) */
@@ -509,6 +637,8 @@ body.dark-mode .tooltiptext {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     font-family: 'Game Font', sans-serif;
     transition: opacity 0.18s ease;
+    margin: 4px;
+    transition: all 0.38s ease-in-out;
 }
 
 .user-info .building-stats-btn:disabled {
@@ -597,7 +727,19 @@ body.dark-mode .user-info .building-stats-btn {
     font-family: 'Game Font', sans-serif;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     transition: all 0.38s ease-in-out;
+    /* make scrollable at max height (requested) */
+    overflow-y: auto;
 }
+
+/* scrollbar for settings panel */
+.settings-container::-webkit-scrollbar {
+    width: 10px;
+}
+.settings-container::-webkit-scrollbar-thumb {
+    background: grey;
+    border-radius: 40px;
+}
+
 .settings-label {
     font-weight: bold;
     font-size: 20px;
@@ -716,7 +858,7 @@ body.dark-mode .changelog-container .changelog-row {
 }
 
 body.dark-mode .segmented-control {
-    background-color: #15192b;
+    background-color: #000000;
 }
 
 body.dark-mode .segmented-control button {
@@ -757,6 +899,7 @@ body.dark-mode .username-container input {
 
 body.dark-mode .user-info {
     color: white;
+    background-color: black;
 }
 
 /* Make settings-value white in dark mode (this is the fix you asked for) */
@@ -767,13 +910,12 @@ body.dark-mode #sfx-volume-val {
 }
 
 /* Inline cookie image / emoji style (used to replace the 🍪 emoji)
-   - This rule was updated so emoji inside a <span class="inline-cookie"> align
-     consistently with the textual numbers (same baseline & vertical alignment).
-*/
+   - Use flex alignment to ensure it's baseline-aligned with the number */
 .inline-cookie {
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0;
     line-height: 1;
     font-size: 1.15em; /* make emoji a little larger to match number size */
 }
@@ -781,7 +923,7 @@ body.dark-mode #sfx-volume-val {
 /* Slightly larger cookie in the main counter */
 #cookie-count .inline-cookie {
     font-size: 1.25em;
-    margin-right: 10px;
+    margin-right: 6px;
 }
 
 /* Keep the small image sizing for img elements inside .inline-cookie usage
@@ -802,6 +944,8 @@ body.dark-mode #sfx-volume-val {
 
 /* ------------------------------------------------------------------
    New switch styles (From Uiverse.io by nikk7007) scoped to .switch
+   NOTE: switch is kept in CSS for backwards compatibility, but the UI
+   now uses a rounded dropdown control instead of the checkbox switch.
    ------------------------------------------------------------------ */
 .switch {
   --false: #fff;
@@ -847,10 +991,97 @@ body.dark-mode .switch input[type=checkbox] {
   background-color: #2b3246;
 }
 
-/* New theme toggle container spacing inside settings */
-.settings-row .switch {
-  margin-left: 12px;
-  transform: translateY(-1px);
+/* New theme dropdown (replaces the old inline switch)
+   - rounded 30px as requested; keyboard/ARIA friendly */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  font-family: 'Game Font', sans-serif;
+}
+
+.dropbtn {
+  background-color: #9ea8db;
+  color: black;
+  padding: 8px 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 30px; /* requested rounded corners */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Game Font'
+}
+
+.dropbtn:focus {
+  outline: 2px solid rgba(148,118,255,0.6);
+  outline-offset: 2px;
+}
+
+/* based on the snippet you provided, but rounded to 30px */
+.dropdown-content {
+   position: absolute;
+  right: 0;
+  top: 45px;
+
+  background-color: #f1f1f1;
+  min-width: 160px;
+  padding: 6px;
+  border-radius: 20px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1002;
+
+  /* animation setup */
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  pointer-events: none;
+
+  transition:
+    opacity var(--transDur) ease,
+    transform var(--transDur) cubic-bezier(0.46, 2, 0.5, 2);
+}
+
+.dropdown-content button,
+.dropdown-content a {
+  background: transparent;
+  border: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 12px;
+  font-family: 'Game Font';
+}
+
+.dropdown-content button:hover,
+.dropdown-content a:hover {
+  background-color: #9ea8db;
+}
+
+/* show/hide modifiers toggled by JS */
+.dropdown.open .dropdown-content {
+  display: block;
+  top: 45px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* small adjustments for dark mode */
+body.dark-mode .dropbtn {
+  background-color: #232535;
+  color: white;
+}
+body.dark-mode .dropdown-content {
+  background-color: #1d1919c9;
+}
+body.dark-mode .dropdown-content button,
+body.dark-mode .dropdown-content a {
+  color: white;
 }
 
 /* --------------------
@@ -904,7 +1135,7 @@ body.dark-mode .upgrades-container .nothing {
     overflow-y: auto;
     backdrop-filter: blur(7px);
     color: black;
-    width: 420px;
+    width: 390px;
     box-shadow: 0 2px 15px rgba(0,0,0,0.08);
     gap: 10px;
 }
@@ -912,4 +1143,320 @@ body.dark-mode .upgrades-container .nothing {
 .upgrades-container .nothing {
     color: #333;
     font-size: 16px;
+}
+
+/* ------------------------------------------------------------------
+   Number animation helper styles
+   - .animating-number is applied while JS tween runs to give a subtle
+     scale/brightness hint on changes.
+   ------------------------------------------------------------------ */
+.animating-number {
+    display: inline-block;
+    transform-origin: 50% 50%;
+    transition: transform 0.12s ease, filter 0.12s ease;
+    transform: scale(1.03);
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.08));
+}
+
+/* Slightly different effect in dark mode for better contrast */
+body.dark-mode .animating-number {
+    transform: scale(1.025);
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18));
+}
+
+/* ----------------------------------------
+   Responsive layout: phone / tablet / wide
+   Add this to the end of styles.css
+   ---------------------------------------- */
+
+/* Small phones (portrait) */
+@media (max-width: 420px) {
+  body {
+    align-items: flex-start;
+    padding-top: 12px;
+    height: auto;
+  }
+
+  /* Center main cookie counter and reduce sizes */
+  #cookie-count {
+    position: relative;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    padding: 8px 12px;
+    font-size: 20px;
+    border-radius: 18px;
+    margin-bottom: 6px;
+  }
+
+  #per-second {
+    position: relative;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .cookie-section {
+    position: relative;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 8px 0 0 0;
+  }
+
+  #cookie {
+    width: 180px;
+    height: 180px;
+    margin-left: 0;
+  }
+
+  /* User info - below cookie */
+  .user-info {
+    position: relative;
+    top: 10px;
+    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    padding: 6px 10px;
+    border-radius: 30px;
+    margin-top: 8px;
+  }
+
+  /* Buildings panel becomes a full-width card anchored near cookie */
+  .upgrade-container,
+  .upgrades-container,
+  .stats-container,
+  .changelog-container,
+  .settings-container {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 460px;
+    top: 14px;
+    border-radius: 18px;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  .upgrade-container .upgrade-item,
+  .upgrades-container .upgrade-item {
+    width: 100%;
+  }
+
+  /* Move segmented control to bottom as a nav */
+  .segmented-control {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    padding: 8px;
+    z-index: 2000;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  }
+
+  .segmented-control button {
+    padding: 8px 12px;
+    margin: 6px 6px;
+    font-size: 16px;
+  }
+
+  /* Username modal remains centered for initial entry */
+  .username-container {
+    width: calc(100% - 32px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Phones & small tablets (portrait / narrow) */
+@media (min-width: 421px) and (max-width: 899px) {
+  body {
+    align-items: flex-start;
+    padding-top: 14px;
+  }
+
+  #cookie-count {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    font-size: 26px;
+    padding: 10px 14px;
+  }
+
+  #per-second {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    font-size: 14px;
+    margin-bottom: 6px;
+    top: 23px;  
+  }
+
+  .cookie-section {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 6px 0;
+  }
+
+  #cookie {
+    width: 220px;
+    height: 220px;
+    margin-left: calc(42% - 40px);
+    top: -217px;
+    position: relative;
+  }
+
+  .user-info {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 94px;
+    width: fit-content;
+    visibility: hidden;
+  }
+
+  /* Make panels full width but not overflowing */
+  .upgrade-container,
+  .upgrades-container,
+  .stats-container,
+  .changelog-container,
+  .settings-container {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 48px);
+    max-width: 410px;
+    top: 12px;
+    padding: 14px;
+    overflow-y: auto;
+    max-height: 240px;
+  }
+
+  .upgrade-item {
+    width: 100%;
+  }
+
+  .segmented-control {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    z-index: 2000;
+    max-height: 60px;
+    top: 640px;
+  }
+}
+
+/* Landscape phones & small tablets: split view when enough width but limited height */
+@media (min-width: 700px) and (orientation: landscape) and (max-height: 520px) {
+  body {
+    align-items: flex-start;
+    padding-top: 12px;
+  }
+
+  /* Use a two-column-ish layout: cookie on the left half, panels stacked on the right */
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 18px;
+    width: calc(100% - 32px);
+  }
+
+  #cookie-count {
+    position: relative;
+    left: 0;
+    transform: none;
+    margin-left: 18px;
+    text-align: left;
+    width: auto;
+  }
+
+  #per-second {
+    position: relative;
+    left: 0;
+    transform: none;
+    margin-left: 18px;
+    text-align: left;
+  }
+
+  .cookie-section {
+    grid-column: 1 / 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4vh;
+  }
+
+  #cookie {
+    width: 220px;
+    height: 220px;
+  }
+
+  .upgrade-container,
+  .upgrades-container,
+  .stats-container,
+  .changelog-container,
+  .settings-container {
+    position: relative;
+    grid-column: 2 / 3;
+    left: 0;
+    transform: none;
+    top: 0;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    align-self: start;
+  }
+
+  .segmented-control {
+    position: relative;
+    left: auto;
+    transform: none;
+    top: 12px;
+    bottom: auto;
+    margin-left: 0;
+    display: flex;
+  }
+
+  .user-info {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    transform: none;
+  }
+}
+
+/* Large desktop / ultra-wide improvements (optional polish) */
+@media (min-width: 1200px) {
+  .upgrade-container, .upgrades-container {
+    width: 420px;
+  }
+
+  .cookie-section #cookie {
+    width: 220px;
+    height: 220px;
+  }
+
+  #cookie-count {
+    width: 420px;
+    left: 169px;
+  }
+}
+
+/* Ensure tooltip positioning still works when panels are fixed or moved */
+.tooltiptext.fixed-position {
+  /* small tweak so tooltips won't overflow on narrow screens */
+  max-width: calc(100vw - 16px);
+  word-break: break-word;
 }
