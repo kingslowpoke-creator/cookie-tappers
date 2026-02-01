@@ -1208,10 +1208,18 @@ body.dark-mode .animating-number {
     margin: 8px 0 0 0;
   }
 
+   .username-container .input-wrapper {
+     position: relative;
+     display: inline-block;
+     width: calc(78% - 40px);
+     text-align: left;
+     left: 1px;
+  }
+
   #cookie {
     width: 180px;
     height: 180px;
-    margin-left: 0;
+    margin-left: 27%;
   }
 
   /* User info - below cookie */
@@ -1225,6 +1233,7 @@ body.dark-mode .animating-number {
     padding: 6px 10px;
     border-radius: 30px;
     margin-top: 8px;
+    visibility: hidden;
   }
 
   /* Buildings panel becomes a full-width card anchored near cookie */
@@ -1240,7 +1249,7 @@ body.dark-mode .animating-number {
     max-width: 460px;
     top: 14px;
     border-radius: 18px;
-    padding: 12px;
+    padding: 8.3px;
     box-sizing: border-box;
   }
 
@@ -1252,13 +1261,15 @@ body.dark-mode .animating-number {
   /* Move segmented control to bottom as a nav */
   .segmented-control {
     position: fixed;
-    bottom: 12px;
+    bottom: 18px;
     left: 50%;
     transform: translateX(-50%);
     width: auto;
     padding: 8px;
     z-index: 2000;
     box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    max-height: 55px;
+    top: 730px;
   }
 
   .segmented-control button {
