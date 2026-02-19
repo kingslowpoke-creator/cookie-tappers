@@ -212,11 +212,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---------------------------
     // Audio / slider helpers
     // ---------------------------
-    function setMusicVolume(val) { if (musicAudio) musicAudio.volume = val / 100; }
+    function setMusicVolume(val) { if (musicAudio) musicAudio.volume = val / 5; }
     function setSfxVolume(val) {
-        if (clickSoundElement) clickSoundElement.volume = val / 100;
-        if (upgradeSoundElement) upgradeSoundElement.volume = val / 100;
-        if (upgradedSoundElement) upgradedSoundElement.volume = val / 100;
+        if (clickSoundElement) clickSoundElement.volume = val / 5;
+        if (upgradeSoundElement) upgradeSoundElement.volume = val / 5;
+        if (upgradedSoundElement) upgradedSoundElement.volume = val / 5;
     }
 
     function updateSliderBackground(slider, fillColor = '#daa8e6', emptyColor = '#ededed') {
@@ -695,11 +695,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update the new Audio & Appearance rows
         if (musicStatRow) {
-            const mv = musicVolumeSlider ? musicVolumeSlider.value : '100';
+            const mv = musicVolumeSlider ? musicVolumeSlider.value : '5';
             musicStatRow.innerHTML = `Music: ${mv}`;
         }
         if (sfxStatRow) {
-            const sv = sfxVolumeSlider ? sfxVolumeSlider.value : '100';
+            const sv = sfxVolumeSlider ? sfxVolumeSlider.value : '5';
             sfxStatRow.innerHTML = `SFX: ${sv}`;
         }
         if (appearanceStatRow) {
