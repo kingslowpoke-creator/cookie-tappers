@@ -1049,14 +1049,15 @@ body.dark-mode .switch input[type=checkbox] {
   background: transparent;
   border: none;
   color: black;
-  padding: 12px 16px;
+  padding: 8px 7px;
   text-decoration: none;
   display: block;
-  width: 100%;
+  width: 95%;
   text-align: left;
   cursor: pointer;
   border-radius: 12px;
   font-family: 'Game Font';
+  margin: 5px;
 }
 
 .dropdown-content button:hover,
